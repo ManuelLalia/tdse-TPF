@@ -1,5 +1,12 @@
-#ifndef TASK_INC_TASK_SENSOR_H_
-#define TASK_INC_TASK_SENSOR_H_
+/*
+ * task_normal.h
+ *
+ *  Created on: Dec 12, 2024
+ *      Author: usuario
+ */
+
+#ifndef INC_TASK_NORMAL_H_
+#define INC_TASK_NORMAL_H_
 
 /********************** CPP guard ********************************************/
 #ifdef __cplusplus
@@ -13,18 +20,15 @@ extern "C" {
 /********************** typedef **********************************************/
 
 /********************** external data declaration ****************************/
-extern uint32_t g_task_sensor_cnt;
-extern volatile uint32_t g_task_sensor_tick_cnt;
+extern uint32_t g_task_system_normal_cnt;
 
 /********************** external functions declaration ***********************/
-void task_sensor_init(void *parameters);
-void task_sensor_update(void *parameters);
+extern void task_system_normal_init(void *parameters);
+extern void task_system_normal_update(void *parameters);
 
 /********************** End of CPP guard *************************************/
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TASK_INC_TASK_SENSOR_H_ */
-
-/********************** end of file ******************************************/
+#endif /* INC_TASK_NORMAL_H_ */

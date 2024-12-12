@@ -1,5 +1,12 @@
-#ifndef TASK_INC_TASK_SENSOR_H_
-#define TASK_INC_TASK_SENSOR_H_
+/*
+ * task_display_interface.h
+ *
+ *  Created on: Dec 12, 2024
+ *      Author: usuario
+ */
+
+#ifndef INC_TASK_DISPLAY_INTERFACE_H_
+#define INC_TASK_DISPLAY_INTERFACE_H_
 
 /********************** CPP guard ********************************************/
 #ifdef __cplusplus
@@ -9,22 +16,26 @@ extern "C" {
 /********************** inclusions *******************************************/
 
 /********************** macros ***********************************************/
+const int MAX_TEXT = 16;
 
 /********************** typedef **********************************************/
+typedef struct info_display {
+	uint8_t pos_x;
+	uint8_t pos_y;
+	char texto[MAX_TEXT];
+} info_display_t;
 
 /********************** external data declaration ****************************/
-extern uint32_t g_task_sensor_cnt;
-extern volatile uint32_t g_task_sensor_tick_cnt;
 
 /********************** external functions declaration ***********************/
-void task_sensor_init(void *parameters);
-void task_sensor_update(void *parameters);
+extern void init_queue_event_task_display(void);
+extern void put_event_task_display(info_display_t info);
+extern info_display_t get_event_task_display(void);
+extern bool any_event_task_display(void);
 
 /********************** End of CPP guard *************************************/
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TASK_INC_TASK_SENSOR_H_ */
-
-/********************** end of file ******************************************/
+#endif /* INC_TASK_DISPLAY_INTERFACE_H_ */
