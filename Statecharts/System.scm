@@ -31,8 +31,8 @@
           "y": -100
         },
         "size": {
-          "height": 939.1999988555908,
-          "width": 951
+          "height": 1030,
+          "width": 980
         },
         "angle": 0,
         "fixedRatio": false,
@@ -61,8 +61,8 @@
           "y": -61.39999771118164
         },
         "size": {
-          "height": 899.5999965667725,
-          "width": 949
+          "height": 990.3999977111816,
+          "width": 978
         },
         "angle": 0,
         "fixedRatio": false,
@@ -175,6 +175,9 @@
         "id": "1e384ae1-990c-4a54-86a8-bdbf3205fb65",
         "z": 216,
         "parent": "e1c1e9cd-8759-4a97-8d8d-63b8121b05ae",
+        "embeds": [
+          "ab144769-3324-464c-b422-c2f85641e3e7"
+        ],
         "attrs": {
           "name": {
             "text": "ST_Norm_Lleno",
@@ -265,12 +268,12 @@
           {
             "attrs": {
               "text": {
-                "text": "ev_egreso /\ncant_autos --"
+                "text": "ev_egreso\n[cant_autos == capacidad] /\ncant_autos --"
               }
             },
             "position": {
-              "distance": 0.6666666666666666,
-              "offset": 55,
+              "distance": 0.5087720369037829,
+              "offset": 105,
               "angle": 0
             }
           },
@@ -2190,10 +2193,6 @@
           {
             "x": 737.5,
             "y": 300
-          },
-          {
-            "x": 520,
-            "y": 300
           }
         ],
         "attrs": {}
@@ -2593,67 +2592,6 @@
         "id": "028660e0-f01b-40b3-8a2e-fc4d5e484a11",
         "z": 395,
         "parent": "e1c1e9cd-8759-4a97-8d8d-63b8121b05ae",
-        "attrs": {}
-      },
-      {
-        "type": "Transition",
-        "source": {
-          "id": "76d0902b-a03a-4322-b80b-73b80becfce5"
-        },
-        "target": {
-          "id": "1283ae01-e4f6-41d9-a1de-42213afaefb2",
-          "anchor": {
-            "name": "topLeft",
-            "args": {
-              "dx": 109.86249923706055,
-              "dy": 40,
-              "rotate": true
-            }
-          },
-          "priority": true
-        },
-        "router": {
-          "name": "orthogonal",
-          "args": {
-            "padding": 8
-          }
-        },
-        "connector": {
-          "name": "rounded"
-        },
-        "labels": [
-          {
-            "attrs": {
-              "text": {
-                "text": "ev_desactivarUp / bloqueado = true"
-              }
-            },
-            "position": {}
-          },
-          {
-            "attrs": {
-              "root": {
-                "opacity": 1
-              },
-              "label": {
-                "text": "2",
-                "fill": "#555555"
-              },
-              "circleBody": {
-                "fill": "#F0F0F0",
-                "stroke": "#555555"
-              }
-            }
-          }
-        ],
-        "id": "a2e59cc1-fc2c-444f-924e-bfef42c091b2",
-        "z": 396,
-        "vertices": [
-          {
-            "x": 1370,
-            "y": -400
-          }
-        ],
         "attrs": {}
       },
       {
@@ -3198,6 +3136,205 @@
           {
             "x": 1010,
             "y": 410
+          }
+        ],
+        "attrs": {}
+      },
+      {
+        "type": "Transition",
+        "source": {
+          "id": "1e384ae1-990c-4a54-86a8-bdbf3205fb65"
+        },
+        "target": {
+          "id": "1e384ae1-990c-4a54-86a8-bdbf3205fb65",
+          "anchor": {
+            "name": "topLeft",
+            "args": {
+              "dx": 90.36249542236328,
+              "dy": 49,
+              "rotate": true
+            }
+          },
+          "priority": true
+        },
+        "router": {
+          "name": "orthogonal",
+          "args": {
+            "padding": 8
+          }
+        },
+        "connector": {
+          "name": "rounded"
+        },
+        "labels": [
+          {
+            "attrs": {
+              "text": {
+                "text": "ev_egreso\n[cant_autos > capacidad] /\ncant_autos --"
+              }
+            },
+            "position": {
+              "distance": 0.5764818294143303,
+              "offset": 35.05421475982532,
+              "angle": 0
+            }
+          },
+          {
+            "attrs": {
+              "root": {
+                "opacity": 1
+              },
+              "label": {
+                "text": "3",
+                "fill": "#555555"
+              },
+              "circleBody": {
+                "fill": "#F0F0F0",
+                "stroke": "#555555"
+              }
+            }
+          }
+        ],
+        "id": "ab144769-3324-464c-b422-c2f85641e3e7",
+        "z": 402,
+        "parent": "1e384ae1-990c-4a54-86a8-bdbf3205fb65",
+        "vertices": [
+          {
+            "x": 5.32,
+            "y": 840
+          }
+        ],
+        "attrs": {}
+      },
+      {
+        "type": "Transition",
+        "source": {
+          "id": "1283ae01-e4f6-41d9-a1de-42213afaefb2",
+          "anchor": {
+            "name": "topLeft",
+            "args": {
+              "dx": 129.86249923706055,
+              "dy": 50,
+              "rotate": true
+            }
+          },
+          "priority": true
+        },
+        "target": {
+          "id": "76d0902b-a03a-4322-b80b-73b80becfce5",
+          "anchor": {
+            "name": "topLeft",
+            "args": {
+              "dx": 209.17498779296875,
+              "dy": 20,
+              "rotate": true
+            }
+          },
+          "priority": true
+        },
+        "router": {
+          "name": "orthogonal",
+          "args": {
+            "padding": 8
+          }
+        },
+        "connector": {
+          "name": "rounded"
+        },
+        "labels": [
+          {
+            "attrs": {
+              "text": {
+                "text": "ev_config_enter"
+              }
+            },
+            "position": {
+              "distance": 0.49999998172218973,
+              "offset": 5,
+              "angle": 0
+            }
+          },
+          {
+            "attrs": {
+              "root": {
+                "opacity": 1
+              },
+              "label": {
+                "text": "3",
+                "fill": "#555555"
+              },
+              "circleBody": {
+                "fill": "#F0F0F0",
+                "stroke": "#555555"
+              }
+            }
+          }
+        ],
+        "id": "7531f5c5-d521-4566-8a04-af40a28bc049",
+        "z": 405,
+        "attrs": {}
+      },
+      {
+        "type": "Transition",
+        "source": {
+          "id": "76d0902b-a03a-4322-b80b-73b80becfce5"
+        },
+        "target": {
+          "id": "1283ae01-e4f6-41d9-a1de-42213afaefb2",
+          "anchor": {
+            "name": "topLeft",
+            "args": {
+              "dx": 129.86249923706055,
+              "dy": 20,
+              "rotate": true
+            }
+          },
+          "priority": true
+        },
+        "router": {
+          "name": "orthogonal",
+          "args": {
+            "padding": 8
+          }
+        },
+        "connector": {
+          "name": "rounded"
+        },
+        "labels": [
+          {
+            "attrs": {
+              "text": {
+                "text": "ev_desactivarUp / bloqueado = true"
+              }
+            },
+            "position": {
+              "distance": 0.5000000022480328,
+              "offset": 15,
+              "angle": 0
+            }
+          },
+          {
+            "attrs": {
+              "root": {
+                "opacity": 1
+              },
+              "label": {
+                "text": "2",
+                "fill": "#555555"
+              },
+              "circleBody": {
+                "fill": "#F0F0F0",
+                "stroke": "#555555"
+              }
+            }
+          }
+        ],
+        "id": "a2e59cc1-fc2c-444f-924e-bfef42c091b2",
+        "z": 406,
+        "vertices": [
+          {
+            "x": 1370,
+            "y": -420
           }
         ],
         "attrs": {}
