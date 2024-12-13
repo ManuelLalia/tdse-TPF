@@ -14,23 +14,38 @@ extern "C" {
 
 /* Events to excite Task System */
 typedef enum task_system_ev {
-	EV_SYS_XX_IDLE,
-	EV_SYS_XX_ACTIVE,
+	EV_SYS_XX_ACTIVAR,
+	EV_SYS_XX_DESACTIVAR_UP,
+	EV_SYS_XX_DESACTIVAR_DOWN,
+	EV_SYS_XX_INGRESO,
+	EV_SYS_XX_EGRESO,
+	EV_SYS_XX_VACIAR_UP,
+	EV_SYS_XX_VACIAR_DOWN,
+	EV_SYS_XX_CONFIGURAR,
+	EV_SYS_XX_ENTER,
+	EV_SYS_XX_NEXT,
 	EV_SYS_XX_TMP_SENSOR,
 	EV_SYS_XX_TMP_INTERNO,
 } task_system_ev_t;
 
 /* State of Task System */
 typedef enum task_system_st {
-	ST_SYS_XX_IDLE,
-	ST_SYS_XX_ACTIVE
+	ST_SYS_XX_DESACTIVADO,
+	ST_SYS_XX_NORMAL,
+	ST_SYS_XX_SET_UP,
 } task_system_st_t;
+
+typedef struct {
+	uint32_t 	max_autos;
+	uint32_t 	advertencia_autos;
+	void*		parametros;
+} task_subsystem_dta_t;
 
 typedef struct {
 	uint32_t			tick;
 	task_system_st_t	state;
-	task_system_ev_t	event;
-	bool				flag;
+	dta_event_sensor_t	dta_event;
+	bool 				bloqueado;
 } task_system_dta_t;
 
 /********************** external data declaration ****************************/

@@ -11,6 +11,10 @@ extern "C" {
 /********************** macros ***********************************************/
 
 /********************** typedef **********************************************/
+typedef struct {
+	task_system_ev_t event;
+	uint16_t value;
+} dta_event_sensor_t;
 
 /********************** external data declaration ****************************/
 
@@ -21,7 +25,7 @@ extern void put_event_task_system(task_system_ev_t event);
 
 extern void put_event_tmp_task_system(task_system_ev_t event, uint16_t value);
 
-extern task_system_ev_t get_event_task_system(void);
+extern dta_event_sensor_t get_event_task_system(void);
 
 extern bool any_event_task_system(void);
 

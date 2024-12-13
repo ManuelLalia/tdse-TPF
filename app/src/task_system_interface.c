@@ -20,11 +20,6 @@
 
 /********************** internal data definition *****************************/
 typedef struct {
-	task_system_ev_t event;
-	uint16_t value;
-} dta_event_sensor_t;
-
-typedef struct {
 	uint32_t	head;
 	uint32_t	tail;
 	uint32_t	count;
@@ -55,9 +50,9 @@ void put_event_tmp_task_system(task_system_ev_t event, uint16_t value) {
 		queue_task_a.head = 0;
 }
 
-task_system_ev_t get_event_task_system(void) {
+dta_event_sensor_t get_event_task_system(void) {
 	queue_task_a.count--;
-	task_system_ev_t event = queue_task_a.queue[queue_task_a.tail];
+	dta_event_sensor_t event = queue_task_a.queue[queue_task_a.tail];
 	queue_task_a.tail++;
 
 	if (MAX_EVENTS == queue_task_a.tail)
