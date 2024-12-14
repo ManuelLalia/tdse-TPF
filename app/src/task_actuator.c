@@ -22,7 +22,7 @@
 /********************** internal data declaration ****************************/
 const task_actuator_cfg_t task_actuator_cfg_list[] = {
 	{ID_LED_PUEDE_PASAR,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
-	{ID_LED_NO_PUEDE_PASAR,	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
+	{ID_LED_ADVERTENCIA,	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
 	{ID_LED_ACTIVADO,  		LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
 	{ID_LED_DESACTIVADO,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
 	{ID_BUZZER_ULULALERO,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
@@ -34,7 +34,7 @@ task_actuator_dta_t task_actuator_dta_list[] = {
 	{DEL_LED_XX_MIN, false, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
 	{DEL_LED_XX_MIN, false, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
 	{DEL_LED_XX_MIN, false, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
-	{DEL_LED_XX_MIN, false, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
+	{DEL_LED_XX_MIN, false, ST_LED_XX_ON,  EV_LED_XX_ON,  false},
 	{DEL_LED_XX_MIN, false, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
 };
 

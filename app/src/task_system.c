@@ -119,9 +119,12 @@ void task_system_update(void *parameters) {
 				if (!p_task_system_dta->bloqueado && EV_SYS_XX_ACTIVAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_NORMAL;
 					p_task_system_dta->activo = true;
+					put_event_task_actuator(EV_LED_XX_BLINK_ON, ID_LED_ACTIVADO);
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_DESACTIVADO);
 
 				} else if (!p_task_system_dta->bloqueado && EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_DESACTIVADO);
 
 				} else if (EV_SYS_XX_DESACTIVAR_DOWN == dta_event.event) {
 					p_task_system_dta->bloqueado = false;
@@ -139,9 +142,11 @@ void task_system_update(void *parameters) {
 					p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
 					p_task_system_dta->bloqueado = true;
 					p_task_system_dta->activo = false;
+					put_event_task_actuator(EV_LED_XX_BLINK_OFF, ID_LED_ACTIVADO);
 
 				} else if (EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
+					put_event_task_actuator(EV_LED_XX_BLINK_OFF, ID_LED_ACTIVADO);
 
 				} else {
 					task_system_normal_update(&p_task_system_dta->dta_subsystem);
@@ -165,8 +170,11 @@ void task_system_update(void *parameters) {
 
 					if (parametros_set_up.salir && !p_task_system_dta->activo) {
 						p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
+						put_event_task_actuator(EV_LED_XX_ON, ID_LED_DESACTIVADO);
+
 					} else if (parametros_set_up.salir && p_task_system_dta->activo) {
 						p_task_system_dta->state = ST_SYS_XX_NORMAL;
+						put_event_task_actuator(EV_LED_XX_BLINK_ON, ID_LED_ACTIVADO);
 					}
 				}
 

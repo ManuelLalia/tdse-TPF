@@ -82,11 +82,24 @@ void task_system_normal_update(void *parameters) {
 		} else {
 			p_task_system_normal_dta->state = ST_NORMAL_XX_NO_VACIO;
 		}
+
+		put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
+
 	} else {
+
 		if (p_task_system_normal_dta->cant_autos < dta->max_autos) {
 			p_task_system_normal_dta->state = ST_NORMAL_XX_AVISO;
+			put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
+			put_event_task_actuator(EV_LED_XX_ON, ID_LED_ADVERTENCIA);
+			put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
+
 		} else {
 			p_task_system_normal_dta->state = ST_NORMAL_XX_LLENO;
+			put_event_task_actuator(EV_LED_XX_OFF, ID_LED_PUEDE_PASAR);
+			put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
+			put_event_task_actuator(EV_LED_XX_ON, ID_BUZZER_ULULALERO);
 		}
 	}
 
@@ -94,6 +107,9 @@ void task_system_normal_update(void *parameters) {
 		p_task_system_dta->state = ST_NORMAL_XX_VACIO;
 		p_task_system_normal_dta->cant_autos = 0;
 		p_task_system_normal_dta->vaciar = true;
+		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_PUEDE_PASAR);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
 
 	} else if (EV_SYS_XX_TMP_SENSOR == dta_event.event) {
 		p_task_system_normal_dta->tmp_sensor = dta_event.value;
@@ -107,10 +123,17 @@ void task_system_normal_update(void *parameters) {
 			case ST_NORMAL_XX_VACIO:
 				if (EV_SYS_XX_VACIAR_DOWN == dta_event.event) {
 					p_task_system_normal_dta->vaciar = false;
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
 
 				} else if (!p_task_system_normal_dta->vaciar && EV_SYS_XX_INGRESO == dta_event.event) {
-					p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
 					p_task_system_normal_dta->cant_autos++;
+					if (p_task_system_normal_dta->cant_autos >= dta->advertencia_autos) {
+						p_task_system_dta->state = ST_NORMAL_XX_AVISO;
+						put_event_task_actuator(EV_LED_XX_ON, ID_LED_ADVERTENCIA);
+
+					} else {
+						p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
+					}
 
 				}
 				break;
@@ -120,6 +143,7 @@ void task_system_normal_update(void *parameters) {
 					p_task_system_normal_dta->cant_autos++;
 					if (p_task_system_normal_dta->cant_autos >= dta->advertencia_autos) {
 						p_task_system_dta->state = ST_NORMAL_XX_AVISO;
+						put_event_task_actuator(EV_LED_XX_ON, ID_LED_ADVERTENCIA);
 					}
 
 				} else if (EV_SYS_XX_EGRESO == dta_event.event) {
@@ -135,12 +159,20 @@ void task_system_normal_update(void *parameters) {
 					p_task_system_normal_dta->cant_autos++;
 					if (p_task_system_normal_dta->cant_autos >= dta->max_autos) {
 						p_task_system_dta->state = ST_NORMAL_XX_LLENO;
+						put_event_task_actuator(EV_LED_XX_OFF, ID_LED_PUEDE_PASAR);
+						put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
+						put_event_task_actuator(EV_LED_XX_ON, ID_BUZZER_ULULALERO);
 					}
 
 				} else if (EV_SYS_XX_EGRESO == dta_event.event) {
 					p_task_system_normal_dta->cant_autos--;
 					if (p_task_system_normal_dta->cant_autos < dta->advertencia_autos) {
-						p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
+						if (p_task_system_normal_dta->cant_autos == 0) {
+							p_task_system_dta->state = ST_NORMAL_XX_VACIO;
+						} else {
+							p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
+						}
+						put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
 					}
 				}
 				break;
@@ -150,6 +182,9 @@ void task_system_normal_update(void *parameters) {
 					p_task_system_normal_dta->cant_autos--;
 					if (p_task_system_normal_dta->cant_autos < dta->max_autos) {
 						p_task_system_dta->state = ST_NORMAL_XX_AVISO;
+						put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
+						put_event_task_actuator(EV_LED_XX_ON, ID_LED_ADVERTENCIA);
+						put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
 					}
 				}
 				break;

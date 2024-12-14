@@ -29,7 +29,7 @@ typedef enum task_actuator_st {
 /* Identifier of Task Actuator */
 typedef enum task_actuator_id {
 	ID_LED_PUEDE_PASAR,
-	ID_LED_NO_PUEDE_PASAR,
+	ID_LED_ADVERTENCIA,
 	ID_LED_ACTIVADO,
 	ID_LED_DESACTIVADO,
 	ID_BUZZER_ULULALERO,
