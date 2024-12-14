@@ -20,9 +20,8 @@ const int MAX_TEXT = 16;
 
 /********************** typedef **********************************************/
 typedef struct info_display {
-	uint8_t pos_x;
-	uint8_t pos_y;
-	char texto[MAX_TEXT];
+	char linea1[MAX_TEXT];
+	char linea2[MAX_TEXT];
 } info_display_t;
 
 /********************** external data declaration ****************************/
@@ -31,7 +30,6 @@ typedef struct info_display {
 extern void init_queue_event_task_display(void);
 extern void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char texto[MAX_TEXT]);
 extern info_display_t get_event_task_display(void);
-extern bool any_event_task_display(void);
 
 /********************** End of CPP guard *************************************/
 #ifdef __cplusplus
