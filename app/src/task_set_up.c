@@ -32,23 +32,22 @@
 #define DEL_SYS_XX_MAX				500ul
 
 /********************** internal data declaration ****************************/
-task_system_normal_dta_t task_system_normal_dta = { \
-	ST_NORMAL_XX_VACIO, 0, 0, 0, false, \
-};
-
-#define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
+task_system_set_up_dta_t task_system_set_up_dta = {  };
 
 /********************** internal functions declaration ***********************/
+void mostrar_main(uint32_t indice_parametro, task_subsystem_dta_t* dta);
+void mostrar_max_autos(uint32_t max_autos);
+void mostrar_advertencia(uint32_t advertencia);
 
 /********************** internal data definition *****************************/
-const char *p_task_system 		= "Task Normal";
-const char *p_task_system_ 		= "Estado normal de ejecución";
+const char *p_task_system 		= "Task Set Up";
+const char *p_task_system_ 		= "Estado set up";
 
 /********************** external data declaration ****************************/
 volatile uint32_t g_task_system_normal_tick_cnt;
 
 /********************** external functions definition ************************/
-void task_system_normal_init(void *parameters) {
+void task_system_set_up_init(void *parameters) {
 	task_system_normal_dta_t 	*p_task_system_dta;
 	task_system_st_t	state;
 
@@ -72,122 +71,110 @@ void task_system_normal_init(void *parameters) {
 	g_task_system_normal_tick_cnt = G_TASK_SYS_TICK_CNT_INI;
 }
 
-void task_system_normal_update(void *parameters) {
-	task_system_normal_dta_t *p_task_system_normal_dta = &task_system_normal_dta;
+void task_system_set_up_update(void *parameters) {
+	task_system_set_up_dta_t *p_task_system_set_up_dta = &task_system_set_up_dta;
 	task_subsystem_dta_t* dta = (task_subsystem_dta_t*) parameters;
-	dta_event_sensor_t dta_event = dta->dta_event;
+	task_set_up_parameters_t* parametros = dta->parametros;
+	task_system_ev_t event = dta->dta_event.event;
 
-	/* Chequear que estamos en el estado correcto */
-	if (p_task_system_normal_dta->cant_autos < dta->advertencia_autos) {
-		if (p_task_system_normal_dta->cant_autos == 0) {
-			p_task_system_normal_dta->state = ST_NORMAL_XX_VACIO;
-		} else {
-			p_task_system_normal_dta->state = ST_NORMAL_XX_NO_VACIO;
-		}
-	} else {
-		if (p_task_system_normal_dta->cant_autos < dta->max_autos) {
-			p_task_system_normal_dta->state = ST_NORMAL_XX_AVISO;
-		} else {
-			p_task_system_normal_dta->state = ST_NORMAL_XX_LLENO;
-		}
+	switch (p_task_system_set_up_dta->state) {
+		case ST_SET_UP_XX_MAIN:
+			if (EV_SYS_XX_ENTER == event) {
+				switch (p_task_system_set_up_dta->indice_parametro) {
+					case MENU_MAIN_MAX_AUTOS:
+						p_task_system_set_up_dta->state = ST_SET_UP_XX_MAX_AUTOS;
+						mostrar_max_autos(dta->max_autos);
+						break;
+
+					case MENU_MAIN_ADVERTENCIA:
+						p_task_system_set_up_dta->state = ST_SET_UP_XX_ADVENTENCIA;
+						mostrar_advertencia(dta->advertencia_autos);
+						break;
+
+					case MENU_MAIN_ESCAPE:
+						parametros->salir = true;
+						break;
+				}
+
+			} else if (EV_SYS_XX_NEXT == event) {
+				p_task_system_set_up_dta->indice_parametro = (p_task_system_set_up_dta->indice_parametro + 1) % MENU_MAIN_MAX;
+				mostrar_main(p_task_system_set_up_dta->indice_parametro);
+			}
+			break;
+
+		case ST_SET_UP_XX_MAX_AUTOS:
+			if (EV_SYS_XX_ENTER == event) {
+				p_task_system_set_up_dta->state = ST_SET_UP_XX_MAIN;
+				mostrar_main(p_task_system_set_up_dta->indice_parametro);
+
+			} else if (EV_SYS_XX_NEXT == event) {
+				dta->max_autos++;
+				if (dta->max_autos >= parametros->default_max_autos) {
+					dta->max_autos = dta->advertencia_autos + 1;
+				}
+				mostrar_max_autos(dta->max_autos);
+			}
+
+			break;
+
+		case ST_SET_UP_XX_ADVENTENCIA:
+			if (EV_SYS_XX_ENTER == event) {
+				p_task_system_set_up_dta->state = ST_SET_UP_XX_MAIN;
+				mostrar_main(p_task_system_set_up_dta->indice_parametro);
+
+			} else if (EV_SYS_XX_NEXT == event) {
+				dta->advertencia_autos++;
+				if (dta->advertencia_autos >= dta->max_autos) {
+					dta->max_autos = 1;
+				}
+				mostrar_advertencia(dta->advertencia_autos);
+			}
+
+			break;
+
 	}
+}
 
-	if (EV_SYS_XX_VACIAR_UP == dta_event.event) {
-		p_task_system_dta->state = ST_NORMAL_XX_VACIO;
-		p_task_system_normal_dta->cant_autos = 0;
-		p_task_system_normal_dta->vaciar = true;
+void mostrar_main(uint32_t indice_parametro, task_subsystem_dta_t* dta) {
+	put_event_task_display(0, 0, " Main:          ");
+	put_event_task_display(0, 1, " >              ");
 
-	} else if (EV_SYS_XX_TMP_SENSOR == dta_event.event) {
-		p_task_system_normal_dta->tmp_sensor = dta_event.value;
+	char text[MAX_TEXT];
+	switch (indice_parametros) {
+		case MENU_MAIN_MAX_AUTOS:
+			put_event_task_display(3, 1, "MaxAutos: 00 ");
+			snprintf(text, sizeof(text), "%i", dta->max_autos);
+			put_event_task_display((dta->max_autos > 9) ? 12 : 13, 1, text);
+			break;
 
-	} else if (EV_SYS_XX_TMP_INTERNO == dta_event.event) {
-		p_task_system_normal_dta->tmp_interna = dta_event.value;
+		case MENU_MAIN_ADVERTENCIA:
+			put_event_task_display(3, 1, "Aviso:    00 ");
+			snprintf(text, sizeof(text), "%i", dta->advertencia_autos);
+			put_event_task_display((dta->advertencia_autos > 9) ? 12 : 13, 1, text);
+			break;
 
-	} else {
-
-		switch (p_task_system_dta->state) {
-			case ST_NORMAL_XX_VACIO:
-				if (EV_SYS_XX_VACIAR_DOWN == dta_event.event) {
-					p_task_system_normal_dta->vaciar = false;
-
-				} else if (!p_task_system_normal_dta->vaciar && EV_SYS_XX_INGRESO == dta_event.event) {
-					p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
-					p_task_system_normal_dta->cant_autos++;
-
-				}
-				break;
-
-			case ST_NORMAL_XX_NO_VACIO:
-				if (EV_SYS_XX_INGRESO == dta_event.event) {
-					p_task_system_normal_dta->cant_autos++;
-					if (p_task_system_normal_dta->cant_autos >= dta->advertencia_autos) {
-						p_task_system_dta->state = ST_NORMAL_XX_AVISO;
-					}
-
-				} else if (EV_SYS_XX_EGRESO == dta_event.event) {
-					p_task_system_normal_dta->cant_autos--;
-					if (p_task_system_normal_dta->cant_autos == 0) {
-						p_task_system_dta->state = ST_NORMAL_XX_VACIO;
-					}
-				}
-				break;
-
-			case ST_NORMAL_XX_AVISO:
-				if (EV_SYS_XX_INGRESO == dta_event.event) {
-					p_task_system_normal_dta->cant_autos++;
-					if (p_task_system_normal_dta->cant_autos >= dta->max_autos) {
-						p_task_system_dta->state = ST_NORMAL_XX_LLENO;
-					}
-
-				} else if (EV_SYS_XX_EGRESO == dta_event.event) {
-					p_task_system_normal_dta->cant_autos--;
-					if (p_task_system_normal_dta->cant_autos < dta->advertencia_autos) {
-						p_task_system_dta->state = ST_NORMAL_XX_NO_VACIO;
-					}
-				}
-				break;
-
-			case ST_NORMAL_XX_LLENO:
-				if (EV_SYS_XX_EGRESO == dta_event.event) {
-					p_task_system_normal_dta->cant_autos--;
-					if (p_task_system_normal_dta->cant_autos < dta->max_autos) {
-						p_task_system_dta->state = ST_NORMAL_XX_AVISO;
-					}
-				}
-				break;
-
-		}
+		case MENU_MAIN_ESCAPE:
+			put_event_task_display(3, 1, "Escape       ");
 	}
+}
 
-	// Display
-	put_event_task_display(0, 0, "Cnt:00 A:00 M:00");
-	put_event_task_display(0, 1, "TS:00°C  TI:00°C");
+void mostrar_max_autos(uint32_t max_autos) {
+	put_event_task_display(0, 0, " Max autos:     ");
+	put_event_task_display(0, 1, " >              ");
 
-	char cant_auto_text[MAX_TEXT];
-	snprintf(cant_auto_text, sizeof(cant_auto_text), "%i", task_system_normal_dta->cant_autos);
-	put_event_task_display((p_task_system_normal_dta->cant_autos > 9) ? 4 : 5, 0, cant_auto_text);
+	char text[MAX_TEXT];
+	snprintf(text, sizeof(text), "%i", max_autos);
+	put_event_task_display(3, 1, text);
 
-	char advertencia_text[MAX_TEXT];
-	snprintf(advertencia_text, sizeof(advertencia_text), "%i", dta->advertencia_autos);
-	put_event_task_display((dta->advertencia_autos > 9) ? 9 : 10, 0, advertencia_text);
+}
 
-	char max_text[MAX_TEXT];
-	snprintf(max_text, sizeof(max_text), "%i", dta->max_autos);
-	put_event_task_display((dta->max_autos > 9) ? 14 : 15, 0, max_text);
+void mostrar_advertencia(uint32_t advertencia) {
+	put_event_task_display(0, 0, " Aviso:         ");
+	put_event_task_display(0, 1, " >              ");
 
-	// T(°C) = tension / 10(mV / C°)
-	uint32_t tmp_sensor = p_task_system_normal_dta->tmp_sensor * 500 / 4096;
-
-	char tmp_sensor_text[MAX_TEXT];
-	snprintf(tmp_sensor_text, sizeof(tmp_sensor_text), "%i", tmp_sensor);
-	put_event_task_display((tmp_sensor > 9) ? 3 : 4, 1, tmp_sensor_text);
-
-	// TODO
-	uint32_t tmp_interna = 0;
-
-	char tmp_interna_text[MAX_TEXT];
-	snprintf(tmp_interna_text, sizeof(tmp_interna_text), "%i", tmp_interna);
-	put_event_task_display((tmp_interna > 9) ? 12 : 13, 1, tmp_interna_text);
+	char text[MAX_TEXT];
+	snprintf(text, sizeof(text), "%i", advertencia);
+	put_event_task_display(3, 1, text);
 }
 
 

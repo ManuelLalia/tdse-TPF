@@ -10,6 +10,7 @@
 #include "board.h"
 #include "app.h"
 #include "task_system_attribute.h"
+#include "task_set_up_attribute.h"
 #include "task_system_interface.h"
 #include "task_actuator_attribute.h"
 #include "task_actuator_interface.h"
@@ -155,14 +156,16 @@ void task_system_update(void *parameters) {
 					p_task_system_dta->activo = false;
 
 				} else {
-					bool salir = false;
+					task_set_up_parameters_t parametros_set_up;
+					parametros_set_up.salir = false;
+					parametros_set_up.default_max_autos = MAX_SYS_XX_AUTOS;
 
-					p_task_system_dta->dta_subsystem.parametros = &salir;
+					p_task_system_dta->dta_subsystem.parametros = &parametros_set_up;
 					task_system_set_up_update(&p_task_system_dta->dta_subsystem);
 
-					if (salir && !activo) {
+					if (parametros_set_up.salir && !p_task_system_dta->activo) {
 						p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
-					} else if (salir && activo) {
+					} else if (parametros_set_up.salir && p_task_system_dta->activo) {
 						p_task_system_dta->state = ST_SYS_XX_NORMAL;
 					}
 				}
