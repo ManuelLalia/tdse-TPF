@@ -30,11 +30,11 @@ typedef enum task_sensor_id {
 	ID_BTN_INGRESAR,
 	ID_BTN_EGRESO,
 	ID_BTN_ACTIVAR,
-	ID_BTN_DESACTIVAR,
-	ID_BTN_VACIAR,
 	ID_BTN_CONFIGURACION,
 	ID_BTN_NEXT,
 	ID_BTN_ENTER,
+	ID_DSW_DESACTIVAR,
+	ID_DSW_VACIAR,
 } task_sensor_id_t;
 
 typedef struct {
@@ -43,8 +43,8 @@ typedef struct {
 	uint16_t			pin;
 	GPIO_PinState		pressed;
 	uint32_t			tick_max;
-	task_sensor_ev_t	signal_up;
-	task_sensor_ev_t	signal_down;
+	task_system_ev_t	signal_up;
+	task_system_ev_t	signal_down;
 } task_sensor_cfg_t;
 
 typedef struct {

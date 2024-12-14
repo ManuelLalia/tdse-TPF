@@ -14,6 +14,7 @@ extern "C" {
 
 /* Events to excite Task System */
 typedef enum task_system_ev {
+	EV_SYS_XX_IDLE,
 	EV_SYS_XX_ACTIVAR,
 	EV_SYS_XX_DESACTIVAR_UP,
 	EV_SYS_XX_DESACTIVAR_DOWN,

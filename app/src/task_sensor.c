@@ -23,14 +23,27 @@
 
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
-	{ID_BTN_CONFIGURACION,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVE},
-	{ID_BTN_ENTER,     		BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVE}
+	{ID_BTN_CONFIGURACION,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_CONFIGURAR},
+	{ID_BTN_ENTER,     		BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ENTER},
+	{ID_BTN_NEXT,  			BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_NEXT},
+	{ID_BTN_ACTIVAR,     	BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVAR},
+	{ID_BTN_INGRESAR,  		BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_INGRESO},
+	{ID_BTN_EGRESO,     	BTN_C_PORT,  BTN_C_PIN,  BTN_C_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_EGRESO},
+	{ID_DSW_DESACTIVAR,  	DSW_A_PORT,  DSW_A_PIN,  DSW_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_DESACTIVAR_UP,  EV_SYS_XX_DESACTIVAR_DOWN},
+	{ID_DSW_VACIAR,     	DSW_B_PORT,  DSW_B_PIN,  DSW_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_VACIAR_UP,  EV_SYS_XX_VACIAR_DOWN},
 };
 
 #define TEMPERATURA_CFG_QTY	(sizeof(task_sensor_cfg_list)/sizeof(task_sensor_cfg_t))
 
 task_sensor_dta_t task_sensor_dta_list[] = {
-	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP}
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
 };
 
 #define SENSOR_DTA_QTY	(sizeof(task_sensor_dta_list)/sizeof(task_sensor_dta_t))
@@ -38,8 +51,8 @@ task_sensor_dta_t task_sensor_dta_list[] = {
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
-const char *p_task_temperatura 		= "Task Sensor (Sensor Statechart)";
-const char *p_task_temperatura_ 		= "Non-Blocking & Update By Time Code";
+const char *p_task_sensor 	= "Task Sensor (Sensor Statechart)";
+const char *p_task_sensor_ 	= "Non-Blocking & Update By Time Code";
 
 /********************** external data declaration ****************************/
 uint32_t g_task_sensor_cnt;
@@ -52,16 +65,15 @@ void task_sensor_init(void *parameters) {
 	task_sensor_ev_t event;
 
 	/* Print out: Task Initialized */
-	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_sensor_init), p_task_temperatura);
-	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_sensor), p_task_temperatura_);
+	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_sensor_init), p_task_sensor);
+	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_sensor), p_task_sensor_);
 
 	g_task_sensor_cnt = G_TASK_SEN_CNT_INIT;
 
 	/* Print out: Task execution counter */
 	LOGGER_LOG("   %s = %lu\r\n", GET_NAME(g_task_sensor_cnt), g_task_sensor_cnt);
 
-	for (uint32_t index = 0; SENSOR_DTA_QTY > index; index++)
-	{
+	for (uint32_t index = 0; SENSOR_DTA_QTY > index; index++) {
 		/* Update Task Sensor Data Pointer */
 		p_task_sensor_dta = &task_sensor_dta_list[index];
 
@@ -87,30 +99,25 @@ void task_sensor_update(void *parameters) {
 
 	/* Protect shared resource (g_task_sensor_tick_cnt) */
 	__asm("CPSID i");	/* disable interrupts*/
-    if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt)
-    {
+    if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt) {
     	g_task_sensor_tick_cnt--;
     	b_time_update_required = true;
     }
     __asm("CPSIE i");	/* enable interrupts*/
 
-    while (b_time_update_required)
-    {
+    while (b_time_update_required) {
 		/* Protect shared resource (g_task_sensor_tick_cnt) */
 		__asm("CPSID i");	/* disable interrupts*/
-		if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt)
-		{
+		if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt) {
 			g_task_sensor_tick_cnt--;
 			b_time_update_required = true;
-		}
-		else
-		{
+
+		} else {
 			b_time_update_required = false;
 		}
 		__asm("CPSIE i");	/* enable interrupts*/
 
-    	for (uint32_t index = 0; SENSOR_DTA_QTY > index; index++)
-		{
+    	for (uint32_t index = 0; SENSOR_DTA_QTY > index; index++) {
     		/* Update Task Sensor Configuration & Data Pointer */
 			p_task_sensor_cfg = &task_sensor_cfg_list[index];
 			p_task_sensor_dta = &task_sensor_dta_list[index];
