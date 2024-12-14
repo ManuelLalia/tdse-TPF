@@ -29,7 +29,7 @@ typedef struct info_display {
 
 /********************** external functions declaration ***********************/
 extern void init_queue_event_task_display(void);
-extern void put_event_task_display(info_display_t info);
+extern void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char texto[MAX_TEXT]);
 extern info_display_t get_event_task_display(void);
 extern bool any_event_task_display(void);
 
