@@ -2,7 +2,7 @@
  * task_normal_attribute.h
  *
  *  Created on: Dec 14, 2024
- *      Author: usuario
+ *      Author: Grupo 2
  */
 
 #ifndef INC_TASK_NORMAL_ATTRIBUTE_H_
@@ -20,15 +20,15 @@ extern "C" {
 /********************** typedef **********************************************/
 
 /* State of Task System */
-typedef enum task_system_st {
+typedef enum task_normal_st {
 	ST_NORMAL_XX_VACIO,
 	ST_NORMAL_XX_NO_VACIO,
 	ST_NORMAL_XX_AVISO,
 	ST_NORMAL_XX_LLENO,
-} task_system_st_t;
+} task_normal_st_t;
 
 typedef struct {
-	task_system_st_t		state;
+	task_normal_st_t		state;
 	uint32_t				cant_autos;
 	uint16_t				tmp_sensor;
 	uint16_t				tmp_interna;
