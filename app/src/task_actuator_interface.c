@@ -22,8 +22,7 @@
 /********************** external data declaration ****************************/
 
 /********************** external functions definition ************************/
-void put_event_task_actuator(task_actuator_ev_t event, task_actuator_id_t identifier)
-{
+void put_event_task_actuator(task_actuator_ev_t event, task_actuator_id_t identifier) {
 	task_actuator_dta_t *p_task_actuator_dta;
 
 	p_task_actuator_dta = task_actuator_dta_list + (uint32_t) identifier;
