@@ -36,16 +36,18 @@ typedef enum task_system_st {
 } task_system_st_t;
 
 typedef struct {
-	uint32_t 	max_autos;
-	uint32_t 	advertencia_autos;
-	void*		parametros;
+	uint32_t 				max_autos;
+	uint32_t 				advertencia_autos;
+	dta_event_sensor_t		dta_event;
+	void*					parametros;
 } task_subsystem_dta_t;
 
 typedef struct {
-	uint32_t			tick;
-	task_system_st_t	state;
-	dta_event_sensor_t	dta_event;
-	bool 				bloqueado;
+	uint32_t				tick;
+	task_system_st_t		state;
+	bool 					bloqueado;
+	bool 					activo;
+	task_subsystem_dta_t	dta_subsystem;
 } task_system_dta_t;
 
 /********************** external data declaration ****************************/

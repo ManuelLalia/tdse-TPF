@@ -24,9 +24,16 @@
 #define DEL_SYS_XX_MED				50ul
 #define DEL_SYS_XX_MAX				500ul
 
+#define MAX_SYS_XX_AUTOS			11ul
+
 /********************** internal data declaration ****************************/
-task_system_dta_t task_system_dta =
-	{DEL_SYS_XX_MIN, ST_SYS_XX_IDLE, EV_SYS_XX_IDLE, false};
+task_system_dta_t task_system_dta = {\
+	DEL_SYS_XX_MIN, \
+	ST_SYS_XX_DESACTIVADO, \
+	false, \
+	false, \
+	{ MAX_SYS_XX_AUTOS - 1, MAX_SYS_XX_AUTOS - 2, { EV_SYS_XX_DESACTIVAR_DOWN, 0 }, NULL }, \
+};
 
 #define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
 
@@ -41,11 +48,9 @@ uint32_t g_task_system_cnt;
 volatile uint32_t g_task_system_tick_cnt;
 
 /********************** external functions definition ************************/
-void task_system_init(void *parameters)
-{
+void task_system_init(void *parameters) {
 	task_system_dta_t 	*p_task_system_dta;
 	task_system_st_t	state;
-	task_system_ev_t	event;
 
 	/* Print out: Task Initialized */
 	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_system_init), p_task_system);
@@ -65,8 +70,6 @@ void task_system_init(void *parameters)
 	state = p_task_system_dta->state;
 	LOGGER_LOG("   %s = %lu", GET_NAME(state), (uint32_t)state);
 
-	event = p_task_system_dta->event;
-	LOGGER_LOG("   %s = %lu", GET_NAME(event), (uint32_t)event);
 
 	g_task_system_tick_cnt = G_TASK_SYS_TICK_CNT_INI;
 
@@ -74,8 +77,7 @@ void task_system_init(void *parameters)
 	task_system_set_up_init(NULL);
 }
 
-void task_system_update(void *parameters)
-{
+void task_system_update(void *parameters) {
 	task_system_dta_t *p_task_system_dta;
 	bool b_time_update_required = false;
 
@@ -84,24 +86,19 @@ void task_system_update(void *parameters)
 
 	/* Protect shared resource (g_task_system_tick) */
 	__asm("CPSID i");	/* disable interrupts*/
-    if (G_TASK_SYS_TICK_CNT_INI < g_task_system_tick_cnt)
-    {
+    if (G_TASK_SYS_TICK_CNT_INI < g_task_system_tick_cnt) {
     	g_task_system_tick_cnt--;
     	b_time_update_required = true;
     }
     __asm("CPSIE i");	/* enable interrupts*/
 
-    while (b_time_update_required)
-    {
+    while (b_time_update_required) {
 		/* Protect shared resource (g_task_system_tick) */
 		__asm("CPSID i");	/* disable interrupts*/
-		if (G_TASK_SYS_TICK_CNT_INI < g_task_system_tick_cnt)
-		{
+		if (G_TASK_SYS_TICK_CNT_INI < g_task_system_tick_cnt) {
 			g_task_system_tick_cnt--;
 			b_time_update_required = true;
-		}
-		else
-		{
+		} else {
 			b_time_update_required = false;
 		}
 		__asm("CPSIE i");	/* enable interrupts*/
@@ -112,53 +109,60 @@ void task_system_update(void *parameters)
 			continue;
 		}
 
-		p_task_system_dta->dta_event = get_event_task_system();
+		dta_event_sensor_t dta_event = get_event_task_system();
+		p_task_system_dta->dta_subsystem.dta_event = dta_event;
 
 		switch (p_task_system_dta->state) {
 			case ST_SYS_XX_DESACTIVADO:
 
-				if (!p_task_system_dta->bloqueado && EV_SYS_XX_ACTIVAR == p_task_system_dta->dta_event.event) {
+				if (!p_task_system_dta->bloqueado && EV_SYS_XX_ACTIVAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_NORMAL;
+					p_task_system_dta->activo = true;
 
-				} else if (!p_task_system_dta->bloqueado && EV_SYS_XX_CONFIGURAR == p_task_system_dta->dta_event.event) {
+				} else if (!p_task_system_dta->bloqueado && EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
 
-				} else if (EV_SYS_XX_DESACTIVAR_DOWN == p_task_system_dta->dta_event.event) {
+				} else if (EV_SYS_XX_DESACTIVAR_DOWN == dta_event.event) {
 					p_task_system_dta->bloqueado = false;
 
-				} else if (EV_SYS_XX_DESACTIVAR_UP == p_task_system_dta->dta_event.event) {
+				} else if (EV_SYS_XX_DESACTIVAR_UP == dta_event.event) {
 					p_task_system_dta->bloqueado = true;
+					p_task_system_dta->activo = false;
 
 				}
 
 				break;
 
 			case ST_SYS_XX_NORMAL:
-				if (EV_SYS_XX_DESACTIVAR_UP == p_task_system_dta->dta_event.event) {
+				if (EV_SYS_XX_DESACTIVAR_UP == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
 					p_task_system_dta->bloqueado = true;
+					p_task_system_dta->activo = false;
 
-				} else if (EV_SYS_XX_CONFIGURAR == p_task_system_dta->dta_event.event) {
+				} else if (EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
 
 				} else {
-					// update
 					task_system_normal_update(&p_task_system_dta->dta_subsystem);
 				}
 
 				break;
 
 			case ST_SYS_XX_SET_UP:
-				if (EV_SYS_XX_DESACTIVAR_UP == p_task_system_dta->dta_event.event) {
+				if (EV_SYS_XX_DESACTIVAR_UP == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
 					p_task_system_dta->bloqueado = true;
+					p_task_system_dta->activo = false;
 
 				} else {
 					bool salir = false;
+
 					p_task_system_dta->dta_subsystem.parametros = &salir;
 					task_system_set_up_update(&p_task_system_dta->dta_subsystem);
 
-					if (salir) {
+					if (salir && !activo) {
+						p_task_system_dta->state = ST_SYS_XX_DESACTIVADO;
+					} else if (salir && activo) {
 						p_task_system_dta->state = ST_SYS_XX_NORMAL;
 					}
 				}
