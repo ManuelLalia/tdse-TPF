@@ -128,7 +128,6 @@ void HAL_SYSTICK_Callback(void) {
 	g_task_temperatura_tick_cnt++;
 	g_task_system_tick_cnt++;
 	g_task_actuator_tick_cnt++;
-	g_task_display_tick_cnt++;
 }
 
 /********************** end of file ******************************************/
