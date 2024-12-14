@@ -173,15 +173,16 @@ void task_system_normal_update(void *parameters) {
 	snprintf(max_text, sizeof(max_text), "%i", dta->max_autos);
 	put_event_task_display((dta->max_autos > 9) ? 14 : 15, 0, max_text);
 
-	// T(°C) = tension / 10(mV / C°)
+	// T(°C) = tension / 10(mV / °C)
 	uint32_t tmp_sensor = p_task_system_normal_dta->tmp_sensor * 500 / 4096;
 
 	char tmp_sensor_text[MAX_TEXT];
 	snprintf(tmp_sensor_text, sizeof(tmp_sensor_text), "%i", tmp_sensor);
 	put_event_task_display((tmp_sensor > 9) ? 3 : 4, 1, tmp_sensor_text);
 
-	// TODO
-	uint32_t tmp_interna = 0;
+	// T(°C) = (1.43V - tension) / 4.3 (mv / °C) + 25 (°C)
+	uint32_t t_sense = p_task_system_normal_dta->tmp_sensor * 5000 / 4096;
+	uint32_t tmp_interna = 25 + (1430 - t_sense) * 10 / 43;
 
 	char tmp_interna_text[MAX_TEXT];
 	snprintf(tmp_interna_text, sizeof(tmp_interna_text), "%i", tmp_interna);
