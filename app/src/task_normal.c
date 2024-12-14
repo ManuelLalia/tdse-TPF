@@ -2,7 +2,7 @@
  * task_normal.c
  *
  *  Created on: Dec 12, 2024
- *      Author: usuario
+ *      Author: Grupo 2
  */
 /********************** inclusions *******************************************/
 /* Project includes. */
@@ -36,8 +36,6 @@ task_system_normal_dta_t task_system_normal_dta = { \
 	ST_NORMAL_XX_VACIO, 0, 0, 0, false, \
 };
 
-#define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
-
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
@@ -50,7 +48,7 @@ volatile uint32_t g_task_system_normal_tick_cnt;
 /********************** external functions definition ************************/
 void task_system_normal_init(void *parameters) {
 	task_system_normal_dta_t 	*p_task_system_dta;
-	task_system_st_t	state;
+	task_normal_st_t	state;
 
 	/* Print out: Task Initialized */
 	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_system_init), p_task_system);
@@ -105,7 +103,7 @@ void task_system_normal_update(void *parameters) {
 
 	} else {
 
-		switch (p_task_system_dta->state) {
+		switch (p_task_system_normal_dta->state) {
 			case ST_NORMAL_XX_VACIO:
 				if (EV_SYS_XX_VACIAR_DOWN == dta_event.event) {
 					p_task_system_normal_dta->vaciar = false;
@@ -158,6 +156,7 @@ void task_system_normal_update(void *parameters) {
 
 		}
 	}
+
 	// Display
 	put_event_task_display(0, 0, "Cnt:00 A:00 M:00");
 	put_event_task_display(0, 1, "TS:00°C  TI:00°C");
