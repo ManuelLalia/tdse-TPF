@@ -85,21 +85,6 @@
 
 
 /********************** internal data declaration ****************************/
-typedef struct{
-    int address;
-    uint8_t data;
-    bool displayPinRs;
-    bool displayPinRw;
-    bool displayPinEn;
-    bool displayPinA;
-    bool displayPinD4;
-    bool displayPinD5;
-    bool displayPinD6;
-    bool displayPinD7;
-} pcf8574_t;
-
-static display_t display;
-static pcf8574_t pcf8574;
 static bool initial8BitCommunicationIsCompleted;
 
 //extern I2C_HandleTypeDef hi2c1;

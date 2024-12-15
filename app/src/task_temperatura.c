@@ -2,7 +2,7 @@
  * task_temperatura.c
  *
  *  Created on: Dec 12, 2024
- *      Author: usuario
+ *      Author: Grupo 2
  */
 
 /********************** inclusions *******************************************/
@@ -85,8 +85,8 @@ void task_temperatura_update(void *parameters) {
     while (b_time_update_required) {
 		/* Protect shared resource (g_task_sensor_tick_cnt) */
 		__asm("CPSID i");	/* disable interrupts*/
-		if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt) {
-			g_task_sensor_tick_cnt--;
+		if (G_TASK_TMP_TICK_CNT_INI < g_task_temperatura_tick_cnt) {
+			g_task_temperatura_tick_cnt--;
 			b_time_update_required = true;
 
 		} else {
@@ -94,7 +94,7 @@ void task_temperatura_update(void *parameters) {
 		}
 		__asm("CPSIE i");	/* enable interrupts*/
 
-    	for (uint32_t index = 0; TEMPERATURA_DTA_QTY > index; index++) {
+    	for (uint32_t index = 0; TEMPERATURA_CFG_QTY > index; index++) {
     		/* Update Task Sensor Configuration & Data Pointer */
 			p_task_temperatura_cfg = &task_temperatura_cfg_list[index];
 

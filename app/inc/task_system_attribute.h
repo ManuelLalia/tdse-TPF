@@ -37,6 +37,11 @@ typedef enum task_system_st {
 } task_system_st_t;
 
 typedef struct {
+	task_system_ev_t event;
+	uint16_t value;
+} dta_event_sensor_t;
+
+typedef struct {
 	uint32_t 				max_autos;
 	uint32_t 				advertencia_autos;
 	dta_event_sensor_t		dta_event;

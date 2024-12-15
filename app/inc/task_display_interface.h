@@ -16,7 +16,7 @@ extern "C" {
 /********************** inclusions *******************************************/
 
 /********************** macros ***********************************************/
-const int MAX_TEXT = 16;
+#define MAX_TEXT 16
 
 /********************** typedef **********************************************/
 typedef struct info_display {
@@ -28,7 +28,7 @@ typedef struct info_display {
 
 /********************** external functions declaration ***********************/
 extern void init_queue_event_task_display(void);
-extern void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char texto[MAX_TEXT]);
+extern void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char* texto);
 extern info_display_t get_event_task_display(void);
 
 /********************** End of CPP guard *************************************/

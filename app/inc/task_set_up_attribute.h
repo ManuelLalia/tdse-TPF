@@ -40,7 +40,7 @@ typedef struct {
 
 typedef struct {
 	task_set_up_st_t		state;
-	uint32_t				indice_parametro;
+	task_set_up_main_t		indice_parametro;
 } task_system_set_up_dta_t;
 
 /********************** external data declaration ****************************/

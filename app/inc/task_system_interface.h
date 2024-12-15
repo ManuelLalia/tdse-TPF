@@ -7,14 +7,11 @@ extern "C" {
 #endif
 
 /********************** inclusions *******************************************/
+#include "task_system_attribute.h"
 
 /********************** macros ***********************************************/
 
 /********************** typedef **********************************************/
-typedef struct {
-	task_system_ev_t event;
-	uint16_t value;
-} dta_event_sensor_t;
 
 /********************** external data declaration ****************************/
 

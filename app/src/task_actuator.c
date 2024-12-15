@@ -197,8 +197,8 @@ void task_actuator_update(void *parameters) {
 					break;
 			}
 		}
-		}
-    }
+	}
 }
+
 
 /********************** end of file ******************************************/

@@ -20,7 +20,6 @@ extern "C" {
 /********************** typedef **********************************************/
 
 /********************** external data declaration ****************************/
-extern uint32_t g_task_system_set_up_cnt;
 
 /********************** external functions declaration ***********************/
 extern void task_system_set_up_init(void *parameters);

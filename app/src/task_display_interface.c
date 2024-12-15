@@ -36,7 +36,7 @@ void init_queue_event_task_display(void) {
 	}
 }
 
-void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char texto[MAX_TEXT]) {
+void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char* texto) {
 	if (pos_y >= 2) return;
 
 	char* linea = info_display.linea1;
@@ -47,6 +47,6 @@ void put_event_task_display(uint8_t pos_x, uint8_t pos_y, char texto[MAX_TEXT]) 
 	}
 }
 
-info_display_t get_event_task_system(void) {
+info_display_t get_event_task_display(void) {
 	return info_display;
 }
