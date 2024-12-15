@@ -20,6 +20,7 @@ extern "C" {
 /********************** typedef **********************************************/
 
 /********************** external data declaration ****************************/
+extern volatile bool g_task_display_tick_update;
 
 /********************** external functions declaration ***********************/
 extern void task_display_init(void *parameters);

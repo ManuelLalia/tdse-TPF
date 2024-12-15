@@ -30,6 +30,7 @@ const char *p_task_display 		= "Task Display";
 const char *p_task_display_ 	= "LCD Display";
 
 /********************** external data declaration ****************************/
+volatile bool g_task_display_tick_update;
 
 /********************** external functions definition ************************/
 void task_display_init(void *parameters) {
@@ -43,12 +44,22 @@ void task_display_init(void *parameters) {
 }
 
 void task_display_update(void *parameters) {
-	info_display_t info_display = get_event_task_display();
+	bool b_time_update_required = false;
+	__asm("CPSID i");	/* disable interrupts*/
+	if (g_task_display_tick_update) {
+		g_task_display_tick_update = false;
+		b_time_update_required = true;
+	}
+	__asm("CPSIE i");	/* enable interrupts*/
 
-	displayCharPositionWrite(0, 0);
-	displayStringWrite(info_display.linea1);
+	if (b_time_update_required) {
+		info_display_t info_display = get_event_task_display();
 
-	displayCharPositionWrite(0, 1);
-	displayStringWrite(info_display.linea2);
+		displayCharPositionWrite(0, 0);
+		displayStringWrite(info_display.linea1);
+
+		displayCharPositionWrite(0, 1);
+		displayStringWrite(info_display.linea2);
+	}
 }
 
