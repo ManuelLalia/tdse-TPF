@@ -29,14 +29,14 @@
 #define DEL_BTN_XX_MAX				50ul
 
 /********************** external data declaration ****************************/
-extern ADC_HandleTypeDef hadc1_tmp_interna;
-extern ADC_HandleTypeDef hadc2_tmp_sensor;
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
 
 /********************** internal data declaration ****************************/
 
 const task_temperatura_cfg_t task_temperatura_cfg_list[] = {
-	{EV_SYS_XX_TMP_INTERNO, &hadc1_tmp_interna},
-	{EV_SYS_XX_TMP_SENSOR, 	&hadc2_tmp_sensor},
+	{EV_SYS_XX_TMP_INTERNO, &hadc1},
+	{EV_SYS_XX_TMP_SENSOR, 	&hadc2},
 };
 
 #define TEMPERATURA_CFG_QTY	(sizeof(task_temperatura_cfg_list)/sizeof(task_temperatura_cfg_t))
@@ -76,30 +76,25 @@ void task_temperatura_update(void *parameters) {
 
 	/* Protect shared resource (g_task_sensor_tick_cnt) */
 	__asm("CPSID i");	/* disable interrupts*/
-    if (G_TASK_TMP_TICK_CNT_INI < g_task_temperatura_tick_cnt)
-    {
+    if (G_TASK_TMP_TICK_CNT_INI < g_task_temperatura_tick_cnt) {
     	g_task_temperatura_tick_cnt--;
     	b_time_update_required = true;
     }
     __asm("CPSIE i");	/* enable interrupts*/
 
-    while (b_time_update_required)
-    {
+    while (b_time_update_required) {
 		/* Protect shared resource (g_task_sensor_tick_cnt) */
 		__asm("CPSID i");	/* disable interrupts*/
-		if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt)
-		{
+		if (G_TASK_SEN_TICK_CNT_INI < g_task_sensor_tick_cnt) {
 			g_task_sensor_tick_cnt--;
 			b_time_update_required = true;
-		}
-		else
-		{
+
+		} else {
 			b_time_update_required = false;
 		}
 		__asm("CPSIE i");	/* enable interrupts*/
 
-    	for (uint32_t index = 0; TEMPERATURA_DTA_QTY > index; index++)
-		{
+    	for (uint32_t index = 0; TEMPERATURA_DTA_QTY > index; index++) {
     		/* Update Task Sensor Configuration & Data Pointer */
 			p_task_temperatura_cfg = &task_temperatura_cfg_list[index];
 
