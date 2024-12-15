@@ -338,12 +338,30 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(D9_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : BTN_A_Pin */
+  GPIO_InitStruct.Pin = BTN_A_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BTN_A_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BTN_C_Pin BTN_B_Pin */
+  GPIO_InitStruct.Pin = BTN_C_Pin|BTN_B_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pin : D10_Pin */
   GPIO_InitStruct.Pin = D10_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(D10_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : DSW_B_Pin DSW_A_Pin */
+  GPIO_InitStruct.Pin = DSW_B_Pin|DSW_A_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
