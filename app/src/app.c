@@ -60,8 +60,6 @@ task_dta_t task_dta_list[TASK_QTY];
 
 /********************** external functions definition ************************/
 void app_init(void) {
-	uint32_t index;
-
 	/* Print out: Application Initialized */
 	LOGGER_LOG("\r\n");
 	LOGGER_LOG("%s is running - Tick [mS] = %d\r\n", GET_NAME(app_init), (int)HAL_GetTick());
@@ -75,8 +73,7 @@ void app_init(void) {
 	LOGGER_LOG(" %s = %d\r\n", GET_NAME(g_app_cnt), (int)g_app_cnt);
 
 	/* Go through the task arrays */
-	for (index = 0; TASK_QTY > index; index++)
-	{
+	for (uint32_t index = 0; TASK_QTY > index; index++) {
 		/* Run task_x_init */
 		(*task_cfg_list[index].task_init)(task_cfg_list[index].parameters);
 
@@ -88,9 +85,8 @@ void app_init(void) {
 }
 
 void app_update(void) {
-	uint32_t index;
-	uint32_t cycle_counter;
 	uint32_t cycle_counter_time_us;
+	bool empeoro_tiempo = false;
 
 	/* Check if it's time to run tasks */
 	if (G_APP_TICK_CNT_INI < g_app_tick_cnt){
@@ -101,24 +97,38 @@ void app_update(void) {
     	g_app_time_us = 0;
 
     	/* Go through the task arrays */
-    	for (index = 0; TASK_QTY > index; index++) {
+    	for (uint32_t index = 0; TASK_QTY > index; index++) {
 			cycle_counter_reset();
 
     		/* Run task_x_update */
 			(*task_cfg_list[index].task_update)(task_cfg_list[index].parameters);
 
-			cycle_counter = cycle_counter_get();
 			cycle_counter_time_us = cycle_counter_time_us();
 
 			/* Update variables */
 	    	g_app_time_us += cycle_counter_time_us;
 
-			if (task_dta_list[index].WCET < cycle_counter_time_us)
-			{
+			if (task_dta_list[index].WCET < cycle_counter_time_us) {
 				task_dta_list[index].WCET = cycle_counter_time_us;
+				empeoro_tiempo = true;
 			}
 	    }
     }
+
+	if (empeoro_tiempo) {
+		LOGGER_LOG("WCET\n");
+		LOGGER_LOG("Task Sensor: %lu us\n", task_dta_list[0].WCET);
+		LOGGER_LOG("Task Temperatura: %lu us\n", task_dta_list[1].WCET);
+		LOGGER_LOG("Task Sistema: %lu us\n", task_dta_list[2].WCET);
+		LOGGER_LOG("Task Actuador: %lu us\n", task_dta_list[3].WCET);
+		LOGGER_LOG("Task Display: %lu us\n", task_dta_list[4].WCET);
+
+		uint32_t WCET_total = 0;
+		for (uint32_t index = 0; TASK_QTY > index; index++) {
+			WCET_total += task_dta_list[index].WCET;
+		}
+		LOGGER_LOG("Total: %lu us\n", WCET_total);
+	}
 }
 
 void HAL_SYSTICK_Callback(void) {
