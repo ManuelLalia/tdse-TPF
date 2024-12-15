@@ -22,10 +22,10 @@
 /********************** internal data declaration ****************************/
 const task_actuator_cfg_t task_actuator_cfg_list[] = {
 	{ID_LED_PUEDE_PASAR,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
-	{ID_LED_ADVERTENCIA,	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
-	{ID_LED_ACTIVADO,  		LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
-	{ID_LED_DESACTIVADO,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
-	{ID_BUZZER_ULULALERO,  	LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF, DEL_LED_XX_BLI},
+	{ID_LED_ADVERTENCIA,	LED_B_PORT,  LED_B_PIN, LED_B_ON,  LED_B_OFF, DEL_LED_XX_BLI},
+	{ID_LED_ACTIVADO,  		LED_C_PORT,  LED_C_PIN, LED_C_ON,  LED_C_OFF, DEL_LED_XX_BLI},
+	{ID_LED_DESACTIVADO,  	LED_D_PORT,  LED_D_PIN, LED_D_ON,  LED_D_OFF, DEL_LED_XX_BLI},
+	{ID_BUZZER_ULULALERO,  	BUZ_A_PORT,  BUZ_A_PIN, BUZ_A_ON,  BUZ_A_OFF, DEL_LED_XX_BLI},
 };
 
 #define ACTUATOR_CFG_QTY	(sizeof(task_actuator_cfg_list)/sizeof(task_actuator_cfg_t))
@@ -67,8 +67,7 @@ void task_actuator_init(void *parameters) {
 	/* Print out: Task execution counter */
 	LOGGER_LOG("   %s = %lu\r\n", GET_NAME(g_task_actuator_cnt), g_task_actuator_cnt);
 
-	for (uint32_t index = 0; index < ACTUATOR_DTA_QTY; index++)
-	{
+	for (uint32_t index = 0; index < ACTUATOR_DTA_QTY; index++) {
 		/* Update Task Actuator Configuration & Data Pointer */
 		p_task_actuator_cfg = &task_actuator_cfg_list[index];
 		p_task_actuator_dta = &task_actuator_dta_list[index];
@@ -85,7 +84,18 @@ void task_actuator_init(void *parameters) {
 		b_event = p_task_actuator_dta->flag;
 		LOGGER_LOG("   %s = %s\r\n", GET_NAME(b_event), (b_event ? "true" : "false"));
 
-		HAL_GPIO_WritePin(p_task_actuator_cfg->gpio_port, p_task_actuator_cfg->pin, p_task_actuator_cfg->led_off);
+		GPIO_PinState led_state = p_task_actuator_cfg->led_off;
+		switch (p_task_actuator_dta->state) {
+			case ST_LED_XX_OFF:
+				state = p_task_actuator_cfg->led_off;
+				break;
+
+			case ST_LED_XX_ON:
+				state = p_task_actuator_cfg->led_on;
+				break;
+		}
+
+		HAL_GPIO_WritePin(p_task_actuator_cfg->gpio_port, p_task_actuator_cfg->pin, led_state);
 	}
 
 	g_task_actuator_tick_cnt = G_TASK_ACT_TICK_CNT_INI;

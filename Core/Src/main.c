@@ -316,27 +316,37 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, D12_Pin|D11_Pin|D7_Pin|D8_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, BUZ_A_Pin|LED_D_Pin|D9_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(D9_GPIO_Port, D9_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_A_Pin|LED_B_Pin|D12_Pin|D11_Pin
+                          |D7_Pin|D8_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(D10_GPIO_Port, D10_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LED_C_Pin|D10_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : D12_Pin D11_Pin D7_Pin D8_Pin */
-  GPIO_InitStruct.Pin = D12_Pin|D11_Pin|D7_Pin|D8_Pin;
+  /*Configure GPIO pins : BUZ_A_Pin LED_D_Pin D9_Pin */
+  GPIO_InitStruct.Pin = BUZ_A_Pin|LED_D_Pin|D9_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_A_Pin LED_B_Pin D12_Pin D11_Pin
+                           D7_Pin D8_Pin */
+  GPIO_InitStruct.Pin = LED_A_Pin|LED_B_Pin|D12_Pin|D11_Pin
+                          |D7_Pin|D8_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : D9_Pin */
-  GPIO_InitStruct.Pin = D9_Pin;
+  /*Configure GPIO pins : LED_C_Pin D10_Pin */
+  GPIO_InitStruct.Pin = LED_C_Pin|D10_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(D9_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : BTN_A_Pin */
   GPIO_InitStruct.Pin = BTN_A_Pin;
@@ -349,13 +359,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : D10_Pin */
-  GPIO_InitStruct.Pin = D10_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(D10_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : DSW_B_Pin DSW_A_Pin */
   GPIO_InitStruct.Pin = DSW_B_Pin|DSW_A_Pin;
