@@ -75,6 +75,8 @@ void task_system_set_up_update(void *parameters) {
 
 	switch (p_task_system_set_up_dta->state) {
 		case ST_SET_UP_XX_MAIN:
+			mostrar_main(p_task_system_set_up_dta->indice_parametro, dta);
+
 			if (EV_SYS_XX_ENTER == event) {
 				switch (p_task_system_set_up_dta->indice_parametro) {
 					case MENU_MAIN_MAX_AUTOS:
@@ -102,6 +104,8 @@ void task_system_set_up_update(void *parameters) {
 			break;
 
 		case ST_SET_UP_XX_MAX_AUTOS:
+			mostrar_max_autos(dta->max_autos);
+
 			if (EV_SYS_XX_ENTER == event) {
 				p_task_system_set_up_dta->state = ST_SET_UP_XX_MAIN;
 				mostrar_main(p_task_system_set_up_dta->indice_parametro, dta);
@@ -117,6 +121,8 @@ void task_system_set_up_update(void *parameters) {
 			break;
 
 		case ST_SET_UP_XX_ADVENTENCIA:
+			mostrar_advertencia(dta->advertencia_autos);
+
 			if (EV_SYS_XX_ENTER == event) {
 				p_task_system_set_up_dta->state = ST_SET_UP_XX_MAIN;
 				mostrar_main(p_task_system_set_up_dta->indice_parametro, dta);
@@ -124,7 +130,7 @@ void task_system_set_up_update(void *parameters) {
 			} else if (EV_SYS_XX_NEXT == event) {
 				dta->advertencia_autos++;
 				if (dta->advertencia_autos >= dta->max_autos) {
-					dta->max_autos = 1;
+					dta->advertencia_autos = 1;
 				}
 				mostrar_advertencia(dta->advertencia_autos);
 			}
@@ -143,13 +149,13 @@ void mostrar_main(task_set_up_main_t indice_parametro, task_subsystem_dta_t* dta
 		case MENU_MAIN_MAX_AUTOS:
 			put_event_task_display(3, 1, "MaxAutos: 00 ");
 			snprintf(text, sizeof(text), "%lu", dta->max_autos);
-			put_event_task_display((dta->max_autos > 9) ? 12 : 13, 1, text);
+			put_event_task_display((dta->max_autos > 9) ? 12 : 14, 1, text);
 			break;
 
 		case MENU_MAIN_ADVERTENCIA:
 			put_event_task_display(3, 1, "Aviso:    00 ");
 			snprintf(text, sizeof(text), "%lu", dta->advertencia_autos);
-			put_event_task_display((dta->advertencia_autos > 9) ? 12 : 13, 1, text);
+			put_event_task_display((dta->advertencia_autos > 9) ? 13 : 14, 1, text);
 			break;
 
 		case MENU_MAIN_ESCAPE:

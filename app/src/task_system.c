@@ -33,7 +33,7 @@ task_system_dta_t task_system_dta = {\
 	ST_SYS_XX_DESACTIVADO, \
 	false, \
 	false, \
-	{ MAX_SYS_XX_AUTOS - 1, MAX_SYS_XX_AUTOS - 2, { EV_SYS_XX_DESACTIVAR_DOWN, 0 }, NULL }, \
+	{ 4, 2, { EV_SYS_XX_DESACTIVAR_DOWN, 0 }, NULL }, \
 };
 
 #define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
@@ -41,8 +41,6 @@ task_system_dta_t task_system_dta = {\
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
-const char *p_task_system 		= "Task System";
-const char *p_task_system_ 		= "General";
 
 /********************** external data declaration ****************************/
 uint32_t g_task_system_cnt;
@@ -54,8 +52,8 @@ void task_system_init(void *parameters) {
 	task_system_st_t	state;
 
 	/* Print out: Task Initialized */
-	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_system_init), p_task_system);
-	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_system), p_task_system_);
+	LOGGER_LOG("  %s is running - Task System\r\n", GET_NAME(task_system_init));
+	LOGGER_LOG("  %s is a General\r\n", GET_NAME(task_system));
 
 	g_task_system_cnt = G_TASK_SYS_CNT_INI;
 
@@ -70,7 +68,6 @@ void task_system_init(void *parameters) {
 	/* Print out: Task execution FSM */
 	state = p_task_system_dta->state;
 	LOGGER_LOG("   %s = %lu", GET_NAME(state), (uint32_t)state);
-
 
 	g_task_system_tick_cnt = G_TASK_SYS_TICK_CNT_INI;
 
@@ -115,7 +112,6 @@ void task_system_update(void *parameters) {
 
 		switch (p_task_system_dta->state) {
 			case ST_SYS_XX_DESACTIVADO:
-
 				if (!p_task_system_dta->bloqueado && EV_SYS_XX_ACTIVAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_NORMAL;
 					p_task_system_dta->activo = true;
@@ -125,6 +121,7 @@ void task_system_update(void *parameters) {
 				} else if (!p_task_system_dta->bloqueado && EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
 					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_DESACTIVADO);
+					task_system_set_up_update(&p_task_system_dta->dta_subsystem);
 
 				} else if (EV_SYS_XX_DESACTIVAR_DOWN == dta_event.event) {
 					p_task_system_dta->bloqueado = false;
@@ -132,7 +129,6 @@ void task_system_update(void *parameters) {
 				} else if (EV_SYS_XX_DESACTIVAR_UP == dta_event.event) {
 					p_task_system_dta->bloqueado = true;
 					p_task_system_dta->activo = false;
-
 				}
 
 				break;
@@ -143,10 +139,14 @@ void task_system_update(void *parameters) {
 					p_task_system_dta->bloqueado = true;
 					p_task_system_dta->activo = false;
 					put_event_task_actuator(EV_LED_XX_BLINK_OFF, ID_LED_ACTIVADO);
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_DESACTIVADO);
+					task_system_normal_update(&p_task_system_dta->dta_subsystem);
 
 				} else if (EV_SYS_XX_CONFIGURAR == dta_event.event) {
 					p_task_system_dta->state = ST_SYS_XX_SET_UP;
 					put_event_task_actuator(EV_LED_XX_BLINK_OFF, ID_LED_ACTIVADO);
+					task_system_normal_update(&p_task_system_dta->dta_subsystem);
+					task_system_set_up_update(&p_task_system_dta->dta_subsystem);
 
 				} else {
 					task_system_normal_update(&p_task_system_dta->dta_subsystem);
@@ -175,6 +175,7 @@ void task_system_update(void *parameters) {
 					} else if (parametros_set_up.salir && p_task_system_dta->activo) {
 						p_task_system_dta->state = ST_SYS_XX_NORMAL;
 						put_event_task_actuator(EV_LED_XX_BLINK_ON, ID_LED_ACTIVADO);
+						task_system_normal_update(&p_task_system_dta->dta_subsystem);
 					}
 				}
 

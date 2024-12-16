@@ -44,23 +44,23 @@ extern "C" {
 
 #define LED_A_PIN		LED_A_Pin
 #define LED_A_PORT		LED_A_GPIO_Port
-#define LED_A_ON		GPIO_PIN_SET
-#define LED_A_OFF		GPIO_PIN_RESET
+#define LED_A_ON		GPIO_PIN_RESET
+#define LED_A_OFF		GPIO_PIN_SET
 
 #define LED_B_PIN		LED_B_Pin
 #define LED_B_PORT		LED_B_GPIO_Port
-#define LED_B_ON		GPIO_PIN_SET
-#define LED_B_OFF		GPIO_PIN_RESET
+#define LED_B_ON		GPIO_PIN_RESET
+#define LED_B_OFF		GPIO_PIN_SET
 
 #define LED_C_PIN		LED_C_Pin
 #define LED_C_PORT		LED_C_GPIO_Port
-#define LED_C_ON		GPIO_PIN_SET
-#define LED_C_OFF		GPIO_PIN_RESET
+#define LED_C_ON		GPIO_PIN_RESET
+#define LED_C_OFF		GPIO_PIN_SET
 
 #define LED_D_PIN		LED_D_Pin
 #define LED_D_PORT		LED_D_GPIO_Port
-#define LED_D_ON		GPIO_PIN_SET
-#define LED_D_OFF		GPIO_PIN_RESET
+#define LED_D_ON		GPIO_PIN_RESET
+#define LED_D_OFF		GPIO_PIN_SET
 
 #define BUZ_A_PIN		BUZ_A_Pin
 #define BUZ_A_PORT		BUZ_A_GPIO_Port

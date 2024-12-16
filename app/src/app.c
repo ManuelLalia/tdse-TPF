@@ -116,18 +116,14 @@ void app_update(void) {
     }
 
 	if (empeoro_tiempo) {
-		LOGGER_LOG("WCET\n");
+		LOGGER_LOG("\nWCET\n----\n");
 		LOGGER_LOG("Task Sensor: %lu us\n", task_dta_list[0].WCET);
 		LOGGER_LOG("Task Temperatura: %lu us\n", task_dta_list[1].WCET);
 		LOGGER_LOG("Task Sistema: %lu us\n", task_dta_list[2].WCET);
 		LOGGER_LOG("Task Actuador: %lu us\n", task_dta_list[3].WCET);
 		LOGGER_LOG("Task Display: %lu us\n", task_dta_list[4].WCET);
 
-		uint32_t WCET_total = 0;
-		for (uint32_t index = 0; TASK_QTY > index; index++) {
-			WCET_total += task_dta_list[index].WCET;
-		}
-		LOGGER_LOG("Total: %lu us\n", WCET_total);
+		LOGGER_LOG("\nFactor Uso: %lu us\n", g_app_time_us);
 	}
 }
 

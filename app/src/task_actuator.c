@@ -43,8 +43,6 @@ task_actuator_dta_t task_actuator_dta_list[] = {
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
-const char *p_task_actuator 		= "Task Actuator";
-const char *p_task_actuator_ 		= "Límitador y Baliza de Sistema con Sirena";
 
 /********************** external data declaration ****************************/
 uint32_t g_task_actuator_cnt;
@@ -59,8 +57,8 @@ void task_actuator_init(void *parameters) {
 	bool b_event;
 
 	/* Print out: Task Initialized */
-	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_actuator_init), p_task_actuator);
-	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_actuator), p_task_actuator_);
+	LOGGER_LOG("  %s is running - Task Actuator\r\n", GET_NAME(task_actuator_init));
+	LOGGER_LOG("  %s is a Límitador y Baliza de Sistema con Sirena\r\n", GET_NAME(task_actuator));
 
 	g_task_actuator_cnt = G_TASK_ACT_CNT_INIT;
 
@@ -87,11 +85,11 @@ void task_actuator_init(void *parameters) {
 		GPIO_PinState led_state = p_task_actuator_cfg->led_off;
 		switch (p_task_actuator_dta->state) {
 			case ST_LED_XX_OFF:
-				state = p_task_actuator_cfg->led_off;
+				led_state = p_task_actuator_cfg->led_off;
 				break;
 
 			case ST_LED_XX_ON:
-				state = p_task_actuator_cfg->led_on;
+				led_state = p_task_actuator_cfg->led_on;
 				break;
 		}
 

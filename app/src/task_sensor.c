@@ -23,22 +23,16 @@
 
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
-	{ID_BTN_CONFIGURACION,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_CONFIGURAR},
-	{ID_BTN_ENTER,     		BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ENTER},
-	{ID_BTN_NEXT,  			BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_NEXT},
-	{ID_BTN_ACTIVAR,     	BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVAR},
-	{ID_BTN_INGRESAR,  		BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_INGRESO},
-	{ID_BTN_EGRESO,     	BTN_C_PORT,  BTN_C_PIN,  BTN_C_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_IDLE,  EV_SYS_XX_EGRESO},
-	{ID_DSW_DESACTIVAR,  	DSW_A_PORT,  DSW_A_PIN,  DSW_A_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_DESACTIVAR_UP,  EV_SYS_XX_DESACTIVAR_DOWN},
-	{ID_DSW_VACIAR,     	DSW_B_PORT,  DSW_B_PIN,  DSW_B_PRESSED, DEL_BTN_XX_MAX, EV_SYS_XX_VACIAR_UP,  EV_SYS_XX_VACIAR_DOWN},
+	{ID_BTN_CONFIGURACION,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX, {}, 0, {EV_SYS_XX_NEXT, EV_SYS_XX_CONFIGURAR}, 2},
+	{ID_BTN_NEXT,  			BTN_B_PORT,  BTN_B_PIN,  BTN_B_PRESSED, DEL_BTN_XX_MAX, {}, 0, {EV_SYS_XX_INGRESO, EV_SYS_XX_ACTIVAR, EV_SYS_XX_ENTER}, 3},
+	{ID_BTN_EGRESO,     	BTN_C_PORT,  BTN_C_PIN,  BTN_C_PRESSED, DEL_BTN_XX_MAX, {}, 0, {EV_SYS_XX_EGRESO}, 1},
+	{ID_DSW_DESACTIVAR,  	DSW_A_PORT,  DSW_A_PIN,  DSW_A_PRESSED, DEL_BTN_XX_MAX, {EV_SYS_XX_DESACTIVAR_UP}, 1, {EV_SYS_XX_DESACTIVAR_DOWN}, 1},
+	{ID_DSW_VACIAR,     	DSW_B_PORT,  DSW_B_PIN,  DSW_B_PRESSED, DEL_BTN_XX_MAX, {EV_SYS_XX_VACIAR_UP}, 1, {EV_SYS_XX_VACIAR_DOWN}, 1},
 };
 
 #define TEMPERATURA_CFG_QTY	(sizeof(task_sensor_cfg_list)/sizeof(task_sensor_cfg_t))
 
 task_sensor_dta_t task_sensor_dta_list[] = {
-	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
-	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
-	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
 	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
 	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
 	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP},
@@ -51,8 +45,6 @@ task_sensor_dta_t task_sensor_dta_list[] = {
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
-const char *p_task_sensor 	= "Task Sensor (Sensor Statechart)";
-const char *p_task_sensor_ 	= "Non-Blocking & Update By Time Code";
 
 /********************** external data declaration ****************************/
 uint32_t g_task_sensor_cnt;
@@ -65,8 +57,8 @@ void task_sensor_init(void *parameters) {
 	task_sensor_ev_t event;
 
 	/* Print out: Task Initialized */
-	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_sensor_init), p_task_sensor);
-	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_sensor), p_task_sensor_);
+	LOGGER_LOG("  %s is running - Task Sensor (Sensor Statechart)\r\n", GET_NAME(task_sensor_init));
+	LOGGER_LOG("  %s is a Botones y Dip Switch\r\n", GET_NAME(task_sensor));
 
 	g_task_sensor_cnt = G_TASK_SEN_CNT_INIT;
 
@@ -86,6 +78,7 @@ void task_sensor_init(void *parameters) {
 		event = p_task_sensor_dta->event;
 		LOGGER_LOG("   %s = %lu\r\n", GET_NAME(event), (uint32_t)event);
 	}
+
 	g_task_sensor_tick_cnt = G_TASK_SEN_TICK_CNT_INI;
 }
 
@@ -145,11 +138,17 @@ void task_sensor_update(void *parameters) {
 					if (p_task_sensor_dta->tick == 0) {
 						if (EV_BTN_XX_UP == p_task_sensor_dta->event){
 							p_task_sensor_dta->state = ST_BTN_XX_UP;
-							put_event_task_system(p_task_sensor_cfg->signal_up);
+
+							for (uint32_t i = 0; i < p_task_sensor_cfg->cant_signals_up; i++) {
+								put_event_task_system(p_task_sensor_cfg->signals_up[i]);
+							}
 
 						} else if (EV_BTN_XX_DOWN == p_task_sensor_dta->event) {
 							p_task_sensor_dta->state = ST_BTN_XX_DOWN;
-							put_event_task_system(p_task_sensor_cfg->signal_down);
+
+							for (uint32_t i = 0; i < p_task_sensor_cfg->cant_signals_down; i++) {
+								put_event_task_system(p_task_sensor_cfg->signals_down[i]);
+							}
 						}
 
 					} else if (p_task_sensor_dta->tick > 0) {

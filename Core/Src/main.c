@@ -363,7 +363,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : DSW_B_Pin DSW_A_Pin */
   GPIO_InitStruct.Pin = DSW_B_Pin|DSW_A_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */

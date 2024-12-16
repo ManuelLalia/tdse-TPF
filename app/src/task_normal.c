@@ -45,9 +45,6 @@ task_system_normal_dta_t task_system_normal_dta = { \
 
 /********************** external functions definition ************************/
 void task_system_normal_init(void *parameters) {
-	task_system_normal_dta_t 	*p_task_system_dta;
-	task_normal_st_t	state;
-
 	/* Print out: Task Initialized */
 	LOGGER_LOG("  %s is running - Task Normal\r\n", GET_NAME(task_system_init));
 	LOGGER_LOG("  %s is a Estado normal de ejecución\r\n", GET_NAME(task_system));
@@ -56,13 +53,6 @@ void task_system_normal_init(void *parameters) {
 
 	/* Print out: Task execution counter */
 	LOGGER_LOG("   %s = %lu\r\n", GET_NAME(g_task_system_cnt), g_task_system_cnt);
-
-	/* Update Task Actuator Configuration & Data Pointer */
-	p_task_system_dta = &task_system_normal_dta;
-
-	/* Print out: Task execution FSM */
-	state = p_task_system_dta->state;
-	LOGGER_LOG("   %s = %lu", GET_NAME(state), (uint32_t)state);
 }
 
 void task_system_normal_update(void *parameters) {
@@ -78,7 +68,12 @@ void task_system_normal_update(void *parameters) {
 			p_task_system_normal_dta->state = ST_NORMAL_XX_NO_VACIO;
 		}
 
-		put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
+		if (p_task_system_normal_dta->vaciar) {
+			put_event_task_actuator(EV_LED_XX_OFF, ID_LED_PUEDE_PASAR);
+		} else {
+			put_event_task_actuator(EV_LED_XX_ON, ID_LED_PUEDE_PASAR);
+		}
+
 		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
 		put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
 
@@ -111,6 +106,11 @@ void task_system_normal_update(void *parameters) {
 
 	} else if (EV_SYS_XX_TMP_INTERNO == dta_event.event) {
 		p_task_system_normal_dta->tmp_interna = dta_event.value;
+
+	} else if (EV_SYS_XX_CONFIGURAR == dta_event.event || EV_SYS_XX_DESACTIVAR_UP == dta_event.event) {
+		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_PUEDE_PASAR);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_LED_ADVERTENCIA);
+		put_event_task_actuator(EV_LED_XX_OFF, ID_BUZZER_ULULALERO);
 
 	} else {
 
@@ -189,7 +189,7 @@ void task_system_normal_update(void *parameters) {
 
 	// Display
 	put_event_task_display(0, 0, "Cnt:00 A:00 M:00");
-	put_event_task_display(0, 1, "TS:00°C  TI:00°C");
+	put_event_task_display(0, 1, "TS:00.C  TI:00.C");
 
 	char cant_auto_text[MAX_TEXT];
 	snprintf(cant_auto_text, sizeof(cant_auto_text), "%lu", p_task_system_normal_dta->cant_autos);
@@ -204,17 +204,19 @@ void task_system_normal_update(void *parameters) {
 	put_event_task_display((dta->max_autos > 9) ? 14 : 15, 0, max_text);
 
 	// T(°C) = tension / 10(mV / °C)
-	uint32_t tmp_sensor = p_task_system_normal_dta->tmp_sensor * 500 / 4096;
+	// uint32_t tmp_sensor = p_task_system_normal_dta->tmp_sensor * 500 / 4096;
+	uint32_t tmp_sensor = 20;
 
 	char tmp_sensor_text[MAX_TEXT];
-	snprintf(tmp_sensor_text, sizeof(tmp_sensor_text), "%lu", tmp_sensor);
+	snprintf(tmp_sensor_text, 3, "%lu", tmp_sensor);
 	put_event_task_display((tmp_sensor > 9) ? 3 : 4, 1, tmp_sensor_text);
 
 	// T(°C) = (1.43V - tension) / 4.3 (mv / °C) + 25 (°C)
-	uint32_t t_sense = p_task_system_normal_dta->tmp_sensor * 5000 / 4096;
-	uint32_t tmp_interna = 25 + (1430 - t_sense) * 10 / 43;
+	// uint32_t t_sense = p_task_system_normal_dta->tmp_interna * 5000 / 4096;
+	// uint32_t tmp_interna = 25 + (1430 - t_sense) * 10 / 43;
+	uint32_t tmp_interna = 20;
 
 	char tmp_interna_text[MAX_TEXT];
-	snprintf(tmp_interna_text, sizeof(tmp_interna_text), "%lu", tmp_interna);
+	snprintf(tmp_interna_text, 3, "%lu", tmp_interna);
 	put_event_task_display((tmp_interna > 9) ? 12 : 13, 1, tmp_interna_text);
 }

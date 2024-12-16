@@ -21,8 +21,14 @@ extern "C" {
 /********************** typedef **********************************************/
 typedef struct {
 	task_system_ev_t		event;
+	uint16_t 				variacion_max;
 	ADC_HandleTypeDef* 		hadc;
 } task_temperatura_cfg_t;
+
+typedef struct {
+	uint16_t 	value;
+	uint16_t 	value_previo;
+} task_temperatura_dta_t;
 
 /********************** external data declaration ****************************/
 

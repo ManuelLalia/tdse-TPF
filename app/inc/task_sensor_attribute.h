@@ -10,6 +10,7 @@ extern "C" {
 #include "task_system_attribute.h"
 
 /********************** macros ***********************************************/
+#define MAX_SIGNALS 4
 
 /********************** typedef **********************************************/
 /* Events to excite Task Sensor */
@@ -44,8 +45,10 @@ typedef struct {
 	uint16_t			pin;
 	GPIO_PinState		pressed;
 	uint32_t			tick_max;
-	task_system_ev_t	signal_up;
-	task_system_ev_t	signal_down;
+	task_system_ev_t	signals_up[MAX_SIGNALS];
+	uint32_t			cant_signals_up;
+	task_system_ev_t	signals_down[MAX_SIGNALS];
+	uint32_t			cant_signals_down;
 } task_sensor_cfg_t;
 
 typedef struct {

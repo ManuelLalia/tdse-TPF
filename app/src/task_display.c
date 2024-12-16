@@ -26,18 +26,15 @@
 /********************** internal functions declaration ***********************/
 
 /********************** internal data definition *****************************/
-const char *p_task_display 		= "Task Display";
-const char *p_task_display_ 	= "LCD Display";
 
 /********************** external data declaration ****************************/
 volatile bool g_task_display_tick_update;
 
 /********************** external functions definition ************************/
 void task_display_init(void *parameters) {
-
 	/* Print out: Task Initialized */
-	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_display_init), p_task_display);
-	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_display), p_task_display_);
+	LOGGER_LOG("  %s is running - Task Display\r\n", GET_NAME(task_display_init));
+	LOGGER_LOG("  %s is a LCD Display\r\n", GET_NAME(task_display));
 
 	init_queue_event_task_display();
 	displayInit();
@@ -52,7 +49,7 @@ void task_display_update(void *parameters) {
 	}
 	__asm("CPSIE i");	/* enable interrupts*/
 
-	if (b_time_update_required) {
+	if (b_time_update_required && any_event_task_display()) {
 		info_display_t info_display = get_event_task_display();
 
 		displayCharPositionWrite(0, 0);
