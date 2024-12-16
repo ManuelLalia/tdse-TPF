@@ -115,7 +115,7 @@ void task_temperatura_update(void *parameters) {
 			if (p_task_temperatura_dta->value_previo > p_task_temperatura_dta->value + p_task_temperatura_cfg->variacion_max || \
 					p_task_temperatura_dta->value > p_task_temperatura_dta->value_previo  + p_task_temperatura_cfg->variacion_max) {
 
-				put_event_tmp_task_system(p_task_temperatura_cfg->event, p_task_temperatura_dta->value);
+				// put_event_tmp_task_system(p_task_temperatura_cfg->event, p_task_temperatura_dta->value);
 				p_task_temperatura_dta->value_previo = p_task_temperatura_dta->value;
 			}
 		}

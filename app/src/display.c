@@ -67,10 +67,7 @@
 #define DISPLAY_PIN_RS  4
 #define DISPLAY_PIN_RW  5
 #define DISPLAY_PIN_EN  6
-#define DISPLAY_PIN_D0  7
-#define DISPLAY_PIN_D1  8
-#define DISPLAY_PIN_D2  9
-#define DISPLAY_PIN_D3 10
+
 #define DISPLAY_PIN_D4 11
 #define DISPLAY_PIN_D5 12
 #define DISPLAY_PIN_D6 13
@@ -78,16 +75,8 @@
 
 #define DISPLAY_PIN_A_PCF8574 3
 
-#define I2C1_SDA PB_9
-#define I2C1_SCL PB_8
-
-#define PCF8574_I2C_BUS_8BIT_WRITE_ADDRESS 78
-
 
 /********************** internal data declaration ****************************/
-static bool initial8BitCommunicationIsCompleted;
-
-//extern I2C_HandleTypeDef hi2c1;
 
 /********************** internal functions declaration ***********************/
 static void displayPinWrite(uint8_t pinName, int value);
@@ -98,64 +87,56 @@ static void displayCodeWrite(bool type, uint8_t dataBus);
 /********************** external data declaration ****************************/
 /********************** external functions definition ************************/
 void displayInit() {
-
-
-    initial8BitCommunicationIsCompleted = false;
-
-    HAL_Delay(50);
+    displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+                      DISPLAY_IR_FUNCTION_SET |
+                      DISPLAY_IR_FUNCTION_SET_8BITS );
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_FUNCTION_SET |
                       DISPLAY_IR_FUNCTION_SET_8BITS );
-    HAL_Delay(5);
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_FUNCTION_SET |
                       DISPLAY_IR_FUNCTION_SET_8BITS );
-    HAL_Delay(1);
-
-    displayCodeWrite( DISPLAY_RS_INSTRUCTION,
-                      DISPLAY_IR_FUNCTION_SET |
-                      DISPLAY_IR_FUNCTION_SET_8BITS );
-    HAL_Delay(1);
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
 					  DISPLAY_IR_FUNCTION_SET |
 					  DISPLAY_IR_FUNCTION_SET_4BITS );
-	HAL_Delay(1);
-
-	initial8BitCommunicationIsCompleted = true;
+	HAL_Delay(10);
 
 	displayCodeWrite( DISPLAY_RS_INSTRUCTION,
 					  DISPLAY_IR_FUNCTION_SET |
 					  DISPLAY_IR_FUNCTION_SET_4BITS |
 					  DISPLAY_IR_FUNCTION_SET_2LINES |
 					  DISPLAY_IR_FUNCTION_SET_5x8DOTS );
-	HAL_Delay(1);
+	HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_DISPLAY_CONTROL |
                       DISPLAY_IR_DISPLAY_CONTROL_DISPLAY_OFF |
                       DISPLAY_IR_DISPLAY_CONTROL_CURSOR_OFF |
                       DISPLAY_IR_DISPLAY_CONTROL_BLINK_OFF );
-    HAL_Delay(1);
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_CLEAR_DISPLAY );
-    HAL_Delay(1);
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_ENTRY_MODE_SET |
                       DISPLAY_IR_ENTRY_MODE_SET_INCREMENT |
                       DISPLAY_IR_ENTRY_MODE_SET_NO_SHIFT );
-    HAL_Delay(1);
+    HAL_Delay(10);
 
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_DISPLAY_CONTROL |
                       DISPLAY_IR_DISPLAY_CONTROL_DISPLAY_ON |
                       DISPLAY_IR_DISPLAY_CONTROL_CURSOR_OFF |
                       DISPLAY_IR_DISPLAY_CONTROL_BLINK_OFF );
-    HAL_Delay(1);
+    HAL_Delay(10);
 }
 
 void displayCharPositionWrite(uint8_t charPositionX, uint8_t charPositionY) {
@@ -165,33 +146,30 @@ void displayCharPositionWrite(uint8_t charPositionX, uint8_t charPositionY) {
                               DISPLAY_IR_SET_DDRAM_ADDR |
                               ( DISPLAY_20x4_LINE1_FIRST_CHARACTER_ADDRESS +
                                 charPositionX ) );
-            HAL_Delay(1);
-        break;
+            break;
 
         case 1:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_SET_DDRAM_ADDR |
                               ( DISPLAY_20x4_LINE2_FIRST_CHARACTER_ADDRESS +
                                 charPositionX ) );
-            HAL_Delay(1);
-        break;
+            break;
 
         case 2:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_SET_DDRAM_ADDR |
                               ( DISPLAY_20x4_LINE3_FIRST_CHARACTER_ADDRESS +
                                 charPositionX ) );
-            HAL_Delay(1);
-        break;
+            break;
 
         case 3:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_SET_DDRAM_ADDR |
                               ( DISPLAY_20x4_LINE4_FIRST_CHARACTER_ADDRESS +
                                 charPositionX ) );
-            HAL_Delay(1);
-        break;
+            break;
     }
+    HAL_Delay(1);
 }
 
 void displayStringWrite(const char * str) {
@@ -224,24 +202,27 @@ static void displayPinWrite(uint8_t pinName, int value) {
 
 static void displayDataBusWrite(uint8_t dataBus) {
     displayPinWrite( DISPLAY_PIN_EN, OFF );
+    HAL_Delay(1);
+
     displayPinWrite( DISPLAY_PIN_D7, dataBus & 0b10000000 );
     displayPinWrite( DISPLAY_PIN_D6, dataBus & 0b01000000 );
     displayPinWrite( DISPLAY_PIN_D5, dataBus & 0b00100000 );
     displayPinWrite( DISPLAY_PIN_D4, dataBus & 0b00010000 );
 
-    if (initial8BitCommunicationIsCompleted) {
-		displayPinWrite( DISPLAY_PIN_EN, ON );
-		HAL_Delay(1);
-		displayPinWrite( DISPLAY_PIN_EN, OFF );
-		HAL_Delay(1);
-		displayPinWrite( DISPLAY_PIN_D7, dataBus & 0b00001000 );
-		displayPinWrite( DISPLAY_PIN_D6, dataBus & 0b00000100 );
-		displayPinWrite( DISPLAY_PIN_D5, dataBus & 0b00000010 );
-		displayPinWrite( DISPLAY_PIN_D4, dataBus & 0b00000001 );
-	}
+    displayPinWrite( DISPLAY_PIN_EN, ON );
+	HAL_Delay(1);
+
+	displayPinWrite( DISPLAY_PIN_EN, OFF );
+	HAL_Delay(1);
+
+	displayPinWrite( DISPLAY_PIN_D7, dataBus & 0b00001000 );
+	displayPinWrite( DISPLAY_PIN_D6, dataBus & 0b00000100 );
+	displayPinWrite( DISPLAY_PIN_D5, dataBus & 0b00000010 );
+	displayPinWrite( DISPLAY_PIN_D4, dataBus & 0b00000001 );
 
     displayPinWrite(DISPLAY_PIN_EN, ON);
     HAL_Delay(1);
+
     displayPinWrite(DISPLAY_PIN_EN, OFF);
     HAL_Delay(1);
 }

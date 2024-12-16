@@ -31,10 +31,13 @@ bool need_updated;
 
 /********************** external functions definition ************************/
 void init_queue_event_task_display(void) {
-	for (uint32_t i = 0; i < MAX_TEXT; i++) {
-		info_display.linea1[i] = '\0';
-		info_display.linea2[i] = '\0';
+	for (uint32_t i = 0; i < MAX_TEXT - 1; i++) {
+		info_display.linea1[i] = ' ';
+		info_display.linea2[i] = ' ';
 	}
+	info_display.linea1[MAX_TEXT - 1] = '\0';
+	info_display.linea2[MAX_TEXT - 1] = '\0';
+
 	need_updated = true;
 }
 
