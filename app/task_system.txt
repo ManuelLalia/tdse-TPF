@@ -1,7 +1,40 @@
-  task_system.c (task_system.h, task_system_attribute.h) 
-   Non-Blocking Code -> System Modeling
-  
-  task_system_interface.c (task_system_interface.h)
-   Non-Blocking Code
+task_system_interface.c (task_system_interface.h) 
+La interfaz se encarga de recibir los eventos de los sensores y ADC, para retransmitirselos
+al sistema intermediario, usando una queue implementada con una array circular.
 
-...
+task_system.c (task_system.h, task_system_attribute.h) 
+El estado inicial es Desactivado. El sistema se activa con un pulsador que solo tendrá efecto 
+si el switch de bloqueo no esta activo. En cualquier momento de la ejecución el sistema se 
+desactiva mediante un switch, bloqueando la posibilidad de activación hasta que el switch 
+vuelva al estado bajo. Estando en ST_Normal se puede pasar a ST_SetUp mediante el pulsador 
+de configuración, en este estado se podrán modificar las variables de [capacidad] y [lim_aviso].
+De ST_SetUp se sale por el [Escape] del main y se vuelve a ST_Normal entrando por un punto distinto 
+según la configuración establecida.
+
+task_normal.c (task_system.h, task_system_attribute.h) 
+La entrada por defecto setea [cant_autos = 0] y el estado inicial es ST_Norm_Vacio. Al llegar un 
+ingreso se pasa al estado ST_Norm_NoVacio.
+En ST_Norm_NoVacio:
+  Se registran ingresos y egresos mientras [1 < cant_autos < lim_aviso].
+  Si se produce el egreso del último auto se vuelve a ST_Norm_Vacio.
+  Si se produce el ingreso que resulta en [cant_autos == lim_aviso] se pasa a ST_Norm_Aviso.
+En ST_Norm_Aviso:
+  Se registran ingresos y egresos mientras [lim_autos <= cant_autos < capacidad].
+  Si se produce un egreso cuando [cant_autos < lim_aviso] se vuelve a ST_Norm_NoVacio.
+  Si se produce un ingreso que resulta [cant_autos == capacidad] se pasa a ST_Norm_lleno
+En ST_Norm_Lleno:
+  Se registran egresos mientras [capacidad <= cant_autos].
+  Si se produce un egreso cuando [cant_autos < capacidad] se vuelve a ST_Norm_Aviso.
+En cualquier estado se puede activar un switch que fuerza al sistema a volver a ST_Norm_vacio seteando 
+[cant_autos = 0] y manteniendolo así hasta que se desactive el switch.
+
+task_set_up.c (task_system.h, task_system_attribute.h) 
+  El menu se maneja con dos pulsadores configuracion/enter y next.
+  El estado inicial es ST_SetUp_Main con [param_index = 0] mediante el pulsador next se cicla el indice 
+  del menu. El indice en 0 accede a la configuracion de capacidad, en 1 accede a la configuración del 
+  límite para el aviso y en 2 es el escape para salir del modo set up. Con el pulsador configuracion/enter 
+  se accede a la configuración seleccionada.
+  En ST_SetUp_Capacidad se cicla la variable [capacidad] entre 0 y MAX_CAPACIDAD-1. Se confirma con 
+  configuracion/enter y se vuelve a ST_SetUp_Main
+  En ST_SetUp_Aviso se cicla la variable [lim_aviso] entre 0 y [capacidad]-1. Se confirma con 
+  configuracion/enter y se vuelve a ST_SetUp_Main
