@@ -1,4 +1,4 @@
 task_temperatura.c (task_temperatura.h)
-Lee los ADC para obtener las tensión que representa la temperatura
-task_temperatura_init -> inicialización de contadores globales y configuración de cada ADC en su estado inicial
-task_temperatura_update -> actualiza el valor medido y si es suficientemente distinto se genera el evento
+Lee los ADC para obtener las tensión que representa la temperatura.
+task_temperatura_init -> inicialización de contadores globales y configuración de cada ADC en su estado inicial.
+task_temperatura_update -> actualiza el valor medido y si es suficientemente distinto se genera el evento.

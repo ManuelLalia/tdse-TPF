@@ -4,7 +4,7 @@ lineas del display, y actualiza estas linea para que display use estas para actu
 display.
 
 task_display.c (task_display.h)
-Obtiene las lineas de la interfaz y las manda si estas lineas cambiaron
-task_display_init -> Inicializa la interfaz de display y el display
+Obtiene las lineas de la interfaz y las manda si estas lineas cambiaron.
+task_display_init -> Inicializa la interfaz de display y el display.
 task_display_update -> Consigue las linea a partir de la interfaz y las manda al display en
-    en el caso de que hayan cambiado
+    en el caso de que hayan cambiado.
