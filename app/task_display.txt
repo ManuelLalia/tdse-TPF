@@ -1,0 +1,10 @@
+task_display_interface.c (task_display_interface.h)
+La interfaz, para evitar tener muchas actualización del display, almacena una versión de las
+lineas del display, y actualiza estas linea para que display use estas para actualizar el 
+display.
+
+task_display.c (task_display.h)
+Obtiene las lineas de la interfaz y las manda si estas lineas cambiaron
+task_display_init -> Inicializa la interfaz de display y el display
+task_display_update -> Consigue las linea a partir de la interfaz y las manda al display en
+    en el caso de que hayan cambiado
