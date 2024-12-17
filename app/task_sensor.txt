@@ -1,4 +1,5 @@
-  task_sensor.c (task_sensor.h, task_sensor_attribute.h) 
-   Non-Blocking & Update By Time Code -> Sensor Modeling
-  
-...
+task_sensor.c (task_sensor.h, task_sensor_attribute.h) 
+Esta tarea se utiliza para gestionar los sensores como dispositivos de entrada del sistema. Los sensores utilizados en este trabajo son pulsadores y 
+dip switches. Las dos funciones clave son:
+task_sensor_init -> permite la inicialización de los sensores, mostrando en pantalla los estados iniciales de cada uno
+task_sensor_update -> permite la lectura del estado actual de cada sensor y la generación de eventos (que se envían al sistema) en base a las transiciones de estado.
