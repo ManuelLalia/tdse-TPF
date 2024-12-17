@@ -1,5 +1,4 @@
-  app.c (app.h)
-   Endless loops, which execute tasks with fixed computing time. This 
-   sequential execution is only deviated from when an interrupt event occurs.
-
-...
+app.c (app.h)
+Endless loop, ejecuta las tareas de sensores, temperatura, sistema, actuadores y display, activando la secuencia cuando un evento es transmitido de los sensores.
+app_init -> inicializa todas las tareas mencionadas antes, y en el caso de tener las opciones de WCET y factor de uso activas, inicializa los valores necesarios para calcularlos
+app_update -> actualiza todas las tareas, y en el caso de tener las opciones de WCET y factor de uso activas, las calcula, mostrandolas en el caso de tener un cambio
