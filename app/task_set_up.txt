@@ -1,0 +1,8 @@
+task_set_up.c (task_set_up.h, task_set_up_attribute.h)
+Esta tarea gestiona un menú interactivo para configura ciertos parámetros del sistema: el número máximo de autos permitidos
+y el número de autos necesario para generar una advertencia. 
+task_system_set_up_init -> inicialización de la tarea, imprimiendo los valores iniciales
+task_system_set_up_update -> gestiona la máquina de estados para actualizar el menú según los eventos recibidos (ENTER o NEXT)
+mostrar_main -> muestra el menú principal en el display
+mostrar_max_autos -> muestra en el display la configuración del máximo de autos
+mostrar_advertencia -> muestra en el display la configuración de la advertencia
