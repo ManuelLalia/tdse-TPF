@@ -36,7 +36,7 @@ extern ADC_HandleTypeDef hadc2;
 
 const task_temperatura_cfg_t task_temperatura_cfg_list[] = {
 	{EV_SYS_XX_TMP_INTERNO, 40, &hadc1},
-	{EV_SYS_XX_TMP_SENSOR, 10, &hadc2},
+	{EV_SYS_XX_TMP_SENSOR, 40, &hadc2},
 };
 
 #define TEMPERATURA_CFG_QTY	(sizeof(task_temperatura_cfg_list)/sizeof(task_temperatura_cfg_t))
@@ -115,7 +115,7 @@ void task_temperatura_update(void *parameters) {
 			if (p_task_temperatura_dta->value_previo > p_task_temperatura_dta->value + p_task_temperatura_cfg->variacion_max || \
 					p_task_temperatura_dta->value > p_task_temperatura_dta->value_previo  + p_task_temperatura_cfg->variacion_max) {
 
-				// put_event_tmp_task_system(p_task_temperatura_cfg->event, p_task_temperatura_dta->value);
+				put_event_tmp_task_system(p_task_temperatura_cfg->event, p_task_temperatura_dta->value);
 				p_task_temperatura_dta->value_previo = p_task_temperatura_dta->value;
 			}
 		}
