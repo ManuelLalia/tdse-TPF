@@ -22,11 +22,23 @@ extern "C" {
 /********************** external data declaration ****************************/
 
 /********************** external functions declaration ***********************/
+typedef enum {
+     DISPLAY_CONNECTION_GPIO_4BITS,
+     DISPLAY_CONNECTION_GPIO_8BITS,
+     DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER,
+} displayConnection_t;
+
+typedef struct {
+   displayConnection_t connection;
+} display_t;
+
+/********************** external functions declaration ***********************/
 void displayInit();
 
-void displayCharPositionWrite(uint8_t charPositionX, uint8_t charPositionY);
+void displayCharPositionWrite( uint8_t charPositionX, uint8_t charPositionY );
 
-void displayStringWrite(const char* str);
+void displayStringWrite( const char * str );
+
 
 #ifdef __cplusplus
 extern }

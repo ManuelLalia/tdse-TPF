@@ -205,7 +205,7 @@ void task_system_normal_update(void *parameters) {
 
 	// T(°C) = tension / 10(mV / °C)
 	float tension_mv = 3300.0 * ((float) (p_task_system_normal_dta->tmp_sensor)) / 4096.0;
-	uint32_t tmp_sensor = (uint32_t) (tension_mv / 10);
+	uint32_t tmp_sensor = (uint32_t) (tension_mv / 50);
 
 	char tmp_sensor_text[MAX_TEXT];
 	snprintf(tmp_sensor_text, 3, "%lu", tmp_sensor);
