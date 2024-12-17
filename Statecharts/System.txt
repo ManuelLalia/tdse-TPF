@@ -1,12 +1,3 @@
-# Falta en el paso de ST_SetUp a ST_Normal, evaluar que pasa si la capacidad se modifica a un valor menor que la cantidad actual de autos 
-  Se me ocurre:
-    1. Agregar otro estado de 'overflow' y solo recibir egresos hasta pasar al estado lleno
-    2. Forzar la cantidad de autos al nuevo maximo (no se que tanto sentido tiene en la aplicacion real)
-
-# Faltan todos los raise de eventos para los actuadores
-# Falta cambiar la lógica para que ST_SetUp cicle entre 1 y MAX_CAPACIDAD en vez de entre 0 y MAX_CAPACIDAD-1
----------------------------------------------------------
-
 Constantes:
   MAX_CAPACIDAD: máximo valor que puede tomar la variable capacidad (+1)
   MAX_OPT: cantidad de opciones del menu de set up (capacidad, limite de aviso, escape)
