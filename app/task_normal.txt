@@ -1,0 +1,7 @@
+task_normal.c (task_normal.h, task_normal_attribute.h)
+Esta tarea se encarga de gestionar el sistema de estacionamiento, monitoreando la cantidad de autos que ingresan y salen y 
+controlando los actuadores.
+task_system_normal_init -> inicialización de la tarea
+task_system_normal_update -> actualización de estados del sistema segun los eventos recibidos. Según corresponda, se enviarán
+eventos a los actuadores (LEDs, buzzer) y se actualizará la pantalla con la cantidad actual de autos, el umbral de advertencia, 
+el límite máximo de autos y los valores de temperatura obtenidos de sensores.
