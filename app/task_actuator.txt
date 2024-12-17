@@ -1,7 +1,11 @@
-  task_actuator.c (task_actuator.h, task_actuator_attribute.h) 
-   Non-Blocking & Update By Time Code -> Actuator Modeling
+task_actuator_interface.c (task_actuator_interface.h)
+Esta tarea sirve como interfaz para interactuar con la tarea principal task_actuator. Su propósito principal es 
+proporcionar una función externa para que otras partes del sistema puedan "notificar" eventos o cambios de estado en los actuadores 
+controlados por task_actuator.
 
-  task_actuator_interface.c (task_actuator_interface.h)
-   Non-Blocking Code
+task_actuator.c (task_actuator.h, task_actuator_attribute.h) 
+Esta tarea se encarga de controlar periféricos (LEDs y buzzer) en función de los eventos recibidos del sistema.
+task_actuator_init -> inicialización de contadores globales y configuración de cada actuador en su estado inicial
+task_actuator_update -> actualización del estado de los actuadores según los eventos recibidos 
 
-...
+
